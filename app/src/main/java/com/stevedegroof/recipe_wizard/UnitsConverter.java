@@ -58,7 +58,7 @@ public class UnitsConverter
     private static final String UNITS_DETECT = "([\\s-])?(cups?|T\\b|t\\b|c\\b|c\\.|TBSP\\b|tbsp\\b|tsp\\b|tablespoons?\\b|Tablespoons?\\b|teaspoons?\\b|quart\\b|qt\\b|inch(es)?\\b|mls?\\b|cm\\b|mm\\b|liters?\\b|litres?\\b|g\\b|grams?\\b|kgs?\\b)";
     private static final String VALUE_DETECT1 = "([0-9]+)?([\\s-])?(([0-9]+/[0-9]+)|[¼½¾⅓⅔⅛])";
     private static final String VALUE_DETECT2 = "[0-9]+\\.[0-9]+";
-    private static final String VALUE_DETECT3 = "[0-9]+";
+    private static final String VALUE_DETECT3 = "\\s[0-9]+";
     private static final String[] INGREDIENT_DETECT = {VALUE_DETECT1+UNITS_DETECT,VALUE_DETECT2+UNITS_DETECT,VALUE_DETECT3+UNITS_DETECT};
     //used to determine if ounces are mass or volume
     private static final String DRY_INGREDIENTS[] = {"noodles", "ginger root", "chocolate chips",
@@ -1071,12 +1071,13 @@ public class UnitsConverter
             found=true;
             pattern = Pattern.compile(ingredientDetect);
             matcher = pattern.matcher(newDirections);
+            String newPhrase;
             while (found)
             {
                 if (matcher.find())
                 {
                     phrase = matcher.group(0);
-                    String newPhrase = convert(phrase, fromServings, toServings, fromSystem, toSystem);
+                    newPhrase = convert(phrase, fromServings, toServings, fromSystem, toSystem);
                     newDirections = newDirections.replace(phrase.trim(), newPhrase.trim());
                 } else
                 {
