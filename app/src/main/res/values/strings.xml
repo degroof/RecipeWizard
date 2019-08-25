@@ -30,6 +30,7 @@
     <string name="metric">Metric</string>
     <string name="increase">increase servings</string>
     <string name="decrease">decrease servings</string>
+    <string name="magic">magic</string>
     <string name="add_ingredients">Add ingredients</string>
     <string name="add_directions">Add directions</string>
     <string name="title_activity_help">Help</string>
@@ -38,7 +39,7 @@
     <string name="help_view_recipe">View a Recipe</string>
     <string name="help_add_recipe">Add a Recipe</string>
     <string name="help_capture">Capture a Recipe</string>
-
+    <string name="direction_wizard_text">Select the measurements that should stay the same (i.e. should not be scaled up or down when the number of servings changes.</string>
     <string name="help1">
         "Recipe Wizard is a simple recipe app that allows you to import, export and"
         "share recipes as plain, human-readable text.\n\nIt can also capture text and convert it into a recipe with (for the most part)"
@@ -46,9 +47,7 @@
         "loading images containing text (e.g. screenshots), or by taking pictures of printed"
         "recipes. Pulling recipes from image or the camera tends to require a bit more editing"
         "but (again, for the most part) works pretty well.\n\nYou can share one recipe (via text, email, etc) or your entire collection of recipes"
-        "(mostly via email). NOTE: If you share the entire collection, it gives you the option of"
-        "adding to or overwriting the previously-stored recipe collection. Sharing one recipe just"
-        "adds it to the existing collection."
+        "(mostly via email)."
     </string>
     <string name="help2">
         "This screen lists all the available recipes in your collection. Tapping on the name of a recipe lets you view the details."
@@ -102,4 +101,7 @@
     <string name="help18">
         "The Delete button should be fairly self-explanatory."
     </string>
+    <string name="help33">The \"magic\" button allows you to make certain sections of a recipe\'s directions non-scalable. For example, if the directions include \"add 1 tsp to each muffin tin\", you wouldn\'t want that to change to \"2 tsp\" when you double the servings. This button will only show up if Recipe Wizard detects scalable ingredients in the directions.</string>
+    <string name="help_edit_recipe">Edit a Recipe</string>
+    <string name="help41">This screen lets you edit a recipe. It works pretty much like the Add Recipe screen, with the exception that the Capture button has been replaced by a Delete button.</string>
 </resources>

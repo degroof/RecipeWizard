@@ -11,6 +11,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
+import java.util.ArrayList;
+
 
 /**
  * Adds a recipe to the book
@@ -33,6 +35,7 @@ public class AddEditRecipe extends StandardActivity
         rawText = "";
         setContentView(R.layout.activity_add_edit_recipe);
     }
+
 
     /**
      * If user hits back arrow
@@ -112,6 +115,18 @@ public class AddEditRecipe extends StandardActivity
      */
     public void saveRecipe(View v)
     {
+        saveRecipe();
+        Intent intent = new Intent();
+        intent.putExtra(CommonActivity.EXTRA_RECIPE, index);
+        setResult(ViewRecipe.RESULT_OK, intent);
+        finish();
+    }
+
+    /**
+     * save the recipe
+     */
+    public void saveRecipe()
+    {
         Recipes recipes = Recipes.getInstance();
         Recipe recipe;
         if (index == -1) //new recipe
@@ -141,11 +156,8 @@ public class AddEditRecipe extends StandardActivity
         recipes.sort();
         index = recipes.getList().indexOf(recipe);
         recipes.save(getApplicationContext());
-        Intent intent = new Intent();
-        intent.putExtra(CommonActivity.EXTRA_RECIPE, index);
-        setResult(ViewRecipe.RESULT_OK, intent);
-        finish();
     }
+
 
     /**
      * the delete or capture button was pressed (edit vs add)
@@ -184,6 +196,19 @@ public class AddEditRecipe extends StandardActivity
     }
 
     /**
+     * the magic button has been pressed
+     *
+     * @param view
+     */
+    public void magic(View view)
+    {
+        saveRecipe();
+        Intent i = new Intent(this, DirectionsAdjustment.class);
+        i.putExtra(EXTRA_RECIPE, index);
+        startActivityForResult(i, REQUEST_MAGIC);
+    }
+
+    /**
      * called on resume or create
      */
     public void onResume()
@@ -194,10 +219,21 @@ public class AddEditRecipe extends StandardActivity
         if (index >= 0) //load recipe for edit
         {
             loadRecipe(index);
+            //hide the "magic" button if there aren't any scalable ingredients
+            String directions = Recipes.getInstance().getList().get(index).getDirections();
+            ArrayList<DirectionsPhrase> phrases = new UnitsConverter().getPhrases(directions);
+            if (phrases.isEmpty())
+            {
+                ImageButton magicButton = findViewById(R.id.addEditRecipeMagicButton);
+                magicButton.setVisibility(View.GONE);
+            }
         } else //change delete button to capture
         {
             ImageButton deleteButton = findViewById(R.id.addEditRecipeDeleteCaptureButton);
             deleteButton.setImageResource(R.drawable.baseline_capture_black_18dp);
+            //hide the "magic button on add
+            ImageButton magicButton = findViewById(R.id.addEditRecipeMagicButton);
+            magicButton.setVisibility(View.GONE);
         }
     }
 

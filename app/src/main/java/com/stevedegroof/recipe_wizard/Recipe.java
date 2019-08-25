@@ -1,5 +1,7 @@
 package com.stevedegroof.recipe_wizard;
 
+import java.util.ArrayList;
+
 /**
  * A single recipe
  */
@@ -10,6 +12,7 @@ public class Recipe implements Comparable<Recipe>
     private String directions = "";
     private int servings = 4;
     private boolean isMetric = false;
+    private ArrayList<DirectionsPhrase> excludedPhrases = new ArrayList<DirectionsPhrase>();
 
     /**
      * Used for sorting
@@ -71,6 +74,17 @@ public class Recipe implements Comparable<Recipe>
     public void setMetric(boolean metric)
     {
         isMetric = metric;
+    }
+
+
+    public ArrayList<DirectionsPhrase> getExcludedPhrases()
+    {
+        return excludedPhrases;
+    }
+
+    public void setExcludedPhrases(ArrayList<DirectionsPhrase> excludedPhrases)
+    {
+        this.excludedPhrases = excludedPhrases;
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.stevedegroof.recipe_wizard;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -56,8 +57,8 @@ public class UnitsConverter
     public static final String VALUE_PARSE = "^([0-9¼½¾⅓⅔⅛\\./ -]+|a |another )";
     private static final String FRACTIONS = "[¼½¾⅓⅔⅛]";
     private static final String UNITS_DETECT = "([\\s-])?(oz|cups?|T\\b|t\\b|c\\b|c\\.|TBSP\\b|tbsp\\b|tsp\\b|tablespoons?\\b|Tablespoons?\\b|teaspoons?\\b|quart\\b|qt\\b|inch(es)?\\b|mls?\\b|cm\\b|mm\\b|liters?\\b|litres?\\b|g\\b|grams?\\b|kgs?\\b)";
-    private static final String VALUE_DETECT2 = "\\s([0-9]+)?([\\s-])?(([0-9]+/[0-9]+)|[¼½¾⅓⅔⅛])";
     private static final String VALUE_DETECT1 = "\\s[0-9]+\\.[0-9]+";
+    private static final String VALUE_DETECT2 = "\\s([0-9]+)?([\\s-])?(([0-9]+/[0-9]+)|[¼½¾⅓⅔⅛])";
     private static final String VALUE_DETECT3 = "\\s[0-9]+";
     private static final String[] INGREDIENT_DETECT = {VALUE_DETECT1 + UNITS_DETECT, VALUE_DETECT2 + UNITS_DETECT, VALUE_DETECT3 + UNITS_DETECT};
     //used to determine if ounces are mass or volume
@@ -70,6 +71,7 @@ public class UnitsConverter
 
     private double value = 0; //numeric part of the quantity
     private int units = NONE; //units part of the quantity
+    private ArrayList<DirectionsPhrase> excludedPhrases; //phrases in the directions that should not be scales
 
 
     /**
@@ -382,22 +384,22 @@ public class UnitsConverter
         } else if (value < 0.29d)
         {
             return "1/4";
-        } else if (value < 0.42)
+        } else if (value < 0.42d)
         {
             return "1/3";
-        } else if (value < 0.58)
+        } else if (value < 0.58d)
         {
             return "1/2";
-        } else if (value < 0.71)
+        } else if (value < 0.71d)
         {
             return "2/3";
-        } else if (value < 0.875)
+        } else if (value < 0.875d)
         {
             return "3/4";
-        } else if (value < 1.375)
+        } else if (value < 1.29d)
         {
             return "1";
-        } else if (value < 3)
+        } else if (value < 3d)
         {
             int intPart = (int) value;
             double frac = value - (double) intPart;
@@ -424,7 +426,6 @@ public class UnitsConverter
             return new DecimalFormat("#").format(Math.round(value));
         }
     }
-
     /**
      * Round and format pints
      *
@@ -1028,10 +1029,12 @@ public class UnitsConverter
      * @param toServings
      * @param fromSystem
      * @param toSystem
+     * @param excludedPhrases
      * @return
      */
-    public String convertDirections(String directions, int fromServings, int toServings, int fromSystem, int toSystem)
+    public String convertDirections(String directions, int fromServings, int toServings, int fromSystem, int toSystem, ArrayList<DirectionsPhrase> excludedPhrases)
     {
+        this.excludedPhrases = excludedPhrases;
         String newDirections = directions;
         if (toSystem == METRIC && fromSystem == IMPERIAL)
         {
@@ -1043,7 +1046,7 @@ public class UnitsConverter
         {
             newDirections = convertSystemAndValue(newDirections, fromServings, toServings, fromSystem, toSystem);
         }
-
+        this.excludedPhrases = null;
         return newDirections;
     }
 
@@ -1076,7 +1079,13 @@ public class UnitsConverter
                 if (matcher.find())
                 {
                     phrase = matcher.group(0);
-                    newPhrase = convert(phrase, fromServings, toServings, fromSystem, toSystem, false);
+                    if (isExcluded(phrase)) //if this phrase matches one in the list of exclusions, don't scale
+                    {
+                        newPhrase = convert(phrase, fromServings, fromServings, fromSystem, toSystem, false);
+                    } else
+                    {
+                        newPhrase = convert(phrase, fromServings, toServings, fromSystem, toSystem, false);
+                    }
                     newDirections = newDirections.replace(phrase, (phrase.matches("\\s.+") ? " " : "") + newPhrase);
                 } else
                 {
@@ -1103,5 +1112,102 @@ public class UnitsConverter
         return newDirections;
     }
 
+    /**
+     * Is this phrase in the list of exclusions?
+     *
+     * @param phrase
+     * @return
+     */
+    private boolean isExcluded(String phrase)
+    {
+        boolean excluded = false;
+        if (excludedPhrases != null && !excludedPhrases.isEmpty())
+        {
+            for (int i = 0; i < excludedPhrases.size() && !excluded; i++)
+            {
+                if (phrase.equals(excludedPhrases.get(i).getPhraseText()))
+                {
+                    excluded = true;
+                }
+            }
+        }
+        return excluded;
+    }
+
+    /**
+     * Get all potentially scalable measures in the directions
+     *
+     * @param directions
+     * @return
+     */
+    public ArrayList<DirectionsPhrase> getPhrases(String directions)
+    {
+        ArrayList<DirectionsPhrase> phrases = new ArrayList<DirectionsPhrase>();
+        String phrase;
+        boolean found;
+        Pattern pattern;
+        Matcher matcher;
+        for (String ingredientDetect : INGREDIENT_DETECT)
+        {
+            directions += " ";
+            found = true;
+            pattern = Pattern.compile(ingredientDetect);
+            matcher = pattern.matcher(directions);
+            while (found)
+            {
+                if (matcher.find())
+                {
+                    phrase = matcher.group(0);
+                    int start = matcher.start(0);
+                    int end = matcher.end(0);
+                    DirectionsPhrase directionsPhrase = new DirectionsPhrase();
+                    directionsPhrase.setPhraseText(phrase);
+                    directionsPhrase.setPhraseStart(start);
+                    directionsPhrase.setPhraseEnd(end);
+                    int cStart = start - 20;
+                    if (cStart < 0) cStart = 0;
+                    int cEnd = end + 20;
+                    if (cEnd > directions.length()) cEnd = directions.length();
+                    for (int i = start; i > cStart; i--)
+                    {
+                        if ("\n,.;".contains(Character.toString(directions.charAt(i))))
+                        {
+                            cStart = i;
+                        }
+                    }
+                    boolean done = false;
+                    for (int i = cStart; i < start && !done; i++)
+                    {
+                        if (directions.charAt(i) == " ".charAt(0)) cStart = i;
+                    }
+                    done = false;
+                    int tempEnd = cEnd;
+                    for (int i = end; i < tempEnd && !done; i++)
+                    {
+                        if ("\n,.;".contains(Character.toString(directions.charAt(i))))
+                        {
+                            cEnd = i;
+                            done = true;
+                        }
+                        if (directions.charAt(i) == " ".charAt(0))
+                        {
+                            cEnd = i;
+                        }
+                    }
+                    if (" ,.;".contains(Character.toString(directions.charAt(cStart)))) cStart++;
+                    String context = directions.substring(cStart, cEnd);
+                    context = "..." + context.trim() + "...";
+
+                    directionsPhrase.setPhraseContext(context);
+
+                    phrases.add(directionsPhrase);
+                } else
+                {
+                    found = false;
+                }
+            }
+        }
+        return phrases;
+    }
 
 }

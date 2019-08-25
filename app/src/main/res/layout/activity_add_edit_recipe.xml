@@ -35,13 +35,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 android:contentDescription="@string/save"
                 android:onClick="saveRecipe"
                 android:text="@string/save"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/addEditRecipeDeleteCaptureButton"
+                app:layout_constraintEnd_toStartOf="@+id/addEditRecipeMagicButton"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -59,9 +58,26 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/addEditRecipeSaveButton"
+                app:layout_constraintStart_toEndOf="@+id/addEditRecipeMagicButton"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/baseline_delete_black_18dp" />
+
+            <ImageButton
+                android:id="@+id/addEditRecipeMagicButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:contentDescription="@string/magic"
+                android:onClick="magic"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/addEditRecipeDeleteCaptureButton"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/addEditRecipeSaveButton"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/baseline_magic_black" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -132,7 +132,7 @@ public class ViewRecipe extends StandardActivity
             recalculatedRecipe.setTitle(recipe.getTitle());
             directions = new UnitsConverter().convertDirections(directions, recipe.getServings(), servings,
                     recipe.isMetric() ? UnitsConverter.METRIC : UnitsConverter.IMPERIAL,
-                    isMetric ? UnitsConverter.METRIC : UnitsConverter.IMPERIAL) + "\n";
+                    isMetric ? UnitsConverter.METRIC : UnitsConverter.IMPERIAL, recipe.getExcludedPhrases()) + "\n";
             recalculatedRecipe.setDirections(directions);
         }
         String[] lines = directions.split("\n");
