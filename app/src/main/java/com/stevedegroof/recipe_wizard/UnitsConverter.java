@@ -44,9 +44,9 @@ public class UnitsConverter
     private static final double TSP_TO_SMIDGEN = 32d;
     private static final double OZ_TO_TSP = 6d;
     private static final double OZ_TO_TBSP = 2d;
-    private static final double OZ_TO_DASH = 24d;
-    private static final double OZ_TO_PINCH = 48d;
-    private static final double OZ_TO_SMIDGEN = 96d;
+    private static final double OZ_TO_DASH = 48d;
+    private static final double OZ_TO_PINCH = 96d;
+    private static final double OZ_TO_SMIDGEN = 192d;
     private static final double OZ_TO_CUPS = 1d / 8d;
     private static final double OZ_TO_PINTS = 1d / 16d;
     private static final double OZ_TO_QTS = 1d / 32d;
@@ -55,15 +55,15 @@ public class UnitsConverter
     //used to detect values
     public static final String VALUE_PARSE = "^([0-9¼½¾⅓⅔⅛\\./ -]+|a |another )";
     private static final String FRACTIONS = "[¼½¾⅓⅔⅛]";
-    private static final String UNITS_DETECT = "([\\s-])?(cups?|T\\b|t\\b|c\\b|c\\.|TBSP\\b|tbsp\\b|tsp\\b|tablespoons?\\b|Tablespoons?\\b|teaspoons?\\b|quart\\b|qt\\b|inch(es)?\\b|mls?\\b|cm\\b|mm\\b|liters?\\b|litres?\\b|g\\b|grams?\\b|kgs?\\b)";
-    private static final String VALUE_DETECT1 = "([0-9]+)?([\\s-])?(([0-9]+/[0-9]+)|[¼½¾⅓⅔⅛])";
-    private static final String VALUE_DETECT2 = "[0-9]+\\.[0-9]+";
+    private static final String UNITS_DETECT = "([\\s-])?(oz|cups?|T\\b|t\\b|c\\b|c\\.|TBSP\\b|tbsp\\b|tsp\\b|tablespoons?\\b|Tablespoons?\\b|teaspoons?\\b|quart\\b|qt\\b|inch(es)?\\b|mls?\\b|cm\\b|mm\\b|liters?\\b|litres?\\b|g\\b|grams?\\b|kgs?\\b)";
+    private static final String VALUE_DETECT2 = "\\s([0-9]+)?([\\s-])?(([0-9]+/[0-9]+)|[¼½¾⅓⅔⅛])";
+    private static final String VALUE_DETECT1 = "\\s[0-9]+\\.[0-9]+";
     private static final String VALUE_DETECT3 = "\\s[0-9]+";
-    private static final String[] INGREDIENT_DETECT = {VALUE_DETECT1+UNITS_DETECT,VALUE_DETECT2+UNITS_DETECT,VALUE_DETECT3+UNITS_DETECT};
+    private static final String[] INGREDIENT_DETECT = {VALUE_DETECT1 + UNITS_DETECT, VALUE_DETECT2 + UNITS_DETECT, VALUE_DETECT3 + UNITS_DETECT};
     //used to determine if ounces are mass or volume
     private static final String DRY_INGREDIENTS[] = {"noodles", "ginger root", "chocolate chips",
             "asparagus", "thyme", "tomatoes", "almonds", "cheese", "prosciutto", "arugula", "macaroni",
-            "meat", "potatoes", "barramundi", "greens", "beef", "nuts", "beans"};
+            "meat", "potatoes", "barramundi", "greens", "beef", "nuts", "beans", "mushrooms"};
     private static final String WET_INGREDIENTS[] = {"sauce", "paste", "soup", "bouillon", "juice",
             "liqueur", "extract", "puree", "purée", "stock", "salsa", "mayo", "mayonnaise", "dressing",
             "milk"};
@@ -261,19 +261,19 @@ public class UnitsConverter
     private String roundTsp(double tsp)
     {
         double rounded = 0;
-        if (tsp < 1d / 32d)
+        if (tsp < 0.047d)
         {
             return "a smidgeon";
-        } else if (tsp < 1.5d / 16d)
+        } else if (tsp < 0.094d)
         {
             return "a pinch";
-        } else if (tsp < 1.5d / 8d)
+        } else if (tsp < 0.19d)
         {
             return "1/8 tsp";
-        } else if (tsp < 1d / 4d)
+        } else if (tsp < 0.38d)
         {
             return "1/4 tsp";
-        } else if (tsp < 3d / 4d)
+        } else if (tsp < 0.75d)
         {
             return "1/2 tsp";
         } else if (tsp < 1d)
@@ -481,42 +481,44 @@ public class UnitsConverter
     /**
      * create string representing the quantity
      *
+     * @param round
      * @return
      */
-    public String toString()
+    public String toString(boolean round)
     {
+        DecimalFormat df = new DecimalFormat("0.0000");
         switch (units)
         {
             case GRAM:
-                return roundMl(value).trim() + " g";
+                return round ? roundMl(value).trim() + " g" : df.format(value) + " g";
             case ML:
-                return roundMl(value).trim() + " ml";
+                return round ? roundMl(value).trim() + " ml" : df.format(value) + " ml";
             case OZ:
-                return roundOz(value).trim() + " oz";
+                return round ? roundOz(value).trim() + " oz" : df.format(value) + " oz";
             case LB:
-                return roundGeneric(value).trim() + " lb";
+                return round ? roundGeneric(value).trim() + " lb" : df.format(value) + " lb";
             case FL_OZ:
-                return roundOz(value).trim() + " oz";
+                return round ? roundOz(value).trim() + " oz" : df.format(value) + " oz";
             case TSP:
-                return roundTsp(value);
+                return round ? roundTsp(value) : df.format(value) + " tsp";
             case PINT:
-                return roundPint(value);
+                return round ? roundPint(value) : df.format(value) + " pt";
             case INCH:
-                return roundInches(value) + (value > 1d ? " inches" : " inch");
+                return round ? roundInches(value) + (value > 1d ? " inches" : " inch") : df.format(value) + (value > 1d ? " inches" : " inch");
             case MM:
-                return roundMm(value);
+                return round ? roundMm(value) : df.format(value) + " mm";
             case CM:
-                return roundCm(value);
+                return round ? roundCm(value) : df.format(value) + " cm";
             case QT:
-                return roundGeneric(value);
+                return round ? roundGeneric(value).trim() + "qt" : df.format(value) + " qt";
             case CUP:
-                return roundGeneric(value).trim() + " c";
+                return round ? roundGeneric(value).trim() + " c" : df.format(value) + " c";
             case KG:
-                return roundGeneric(value).trim() + " kg";
+                return round ? roundGeneric(value).trim() + " kg" : df.format(value) + " kg";
             case TBSP:
-                return new DecimalFormat("#").format(Math.round(value)) + " tbsp";
+                return round ? new DecimalFormat("#").format(Math.round(value)) + " tbsp" : df.format(value) + " tbsp";
             default:
-                return roundGeneric(value).trim();
+                return round ? roundGeneric(value).trim() : df.format(value);
         }
     }
 
@@ -732,7 +734,7 @@ public class UnitsConverter
             this.value = value;
             remainingIngredient = remainingIngredient.trim();
         }
-        if(value==-1d)
+        if (value == -1d)
         {
             return ingredient;
         }
@@ -747,127 +749,123 @@ public class UnitsConverter
      * @param toServings   servings requested by user
      * @param fromSystem   measurement system listed in recipe
      * @param toSystem     measurement system requested by user
+     * @param round        round to nearest practical measure
      * @return converted ingredient string
      */
-    String convert(String ingredient, int fromServings, int toServings, int fromSystem, int toSystem)
+    String convert(String ingredient, int fromServings, int toServings, int fromSystem, int toSystem, boolean round)
     {
         value = 0d;
         units = NONE;
         String ingredientRemainder = "";
-        if (fromSystem == toSystem && fromServings == toServings)
+        ingredientRemainder = setQuantity(ingredient);
+        if (value == -1d) return ingredient;
+        if (units == NONE)
         {
-            return ingredient;
-        } else
+            return (roundGeneric(value * toServings / fromServings) + " " + ingredientRemainder.trim()).trim();
+        }
+        if (units == INCH && toSystem == METRIC)
         {
-            ingredientRemainder = setQuantity(ingredient);
-            if(value==-1d) return ingredient;
-            if (units == NONE)
-            {
-                return (roundGeneric(value * toServings / fromServings) + " " + ingredientRemainder.trim()).trim();
-            }
-            if (units == INCH && toSystem == METRIC)
-            {
-                value = value * INCH_TO_MM;
-                units = MM;
-                return toString() + " " + ingredientRemainder.trim();
-            }
-            if (units == MM && toSystem == IMPERIAL)
-            {
-                value = value / INCH_TO_MM;
-                units = INCH;
-                return toString() + " " + ingredientRemainder.trim();
-            }
-            if (units == CM && toSystem == IMPERIAL)
-            {
-                value = value / INCH_TO_MM * 10d;
-                units = INCH;
-                return toString() + " " + ingredientRemainder.trim();
-            }
-            if (units == INCH || units == CM || units == MM)
-            {
-                return toString() + " " + ingredientRemainder.trim();
-            }
-            value = value * toServings / fromServings;
-            if (units == OZ && isMass(ingredientRemainder))
-            {
-                units = LB;
-                value = value / LB_TO_OZ;
-            }
-            if (units == LB)
-            {
-                units = OZ;
-                value = value * LB_TO_OZ;
-                if (toSystem == IMPERIAL)
-                {
-                    if (value >= LB_TO_OZ)
-                    {
-                        value = value / LB_TO_OZ;
-                        units = LB;
-                    }
-                } else
-                {
-                    units = GRAM;
-                    value = value * OZ_TO_G;
-                    if (value > 490 && value < 510 || value > 800)
-                    {
-                        value = value / 1000;
-                        units = KG;
-                    }
-                }
-                return toString() + " " + ingredientRemainder.trim();
-            }
-            if (units == DASH)
-            {
-                units = OZ;
-                value = value / OZ_TO_DASH;
-            } else if (units == SMIDGEN)
-            {
-                units = OZ;
-                value = value / OZ_TO_SMIDGEN;
-            } else if (units == PINCH)
-            {
-                units = OZ;
-                value = value / OZ_TO_PINCH;
-            } else if (units == TSP)
-            {
-                units = OZ;
-                value = value / OZ_TO_TSP;
-            } else if (units == TBSP)
-            {
-                units = OZ;
-                value = value / OZ_TO_TBSP;
-            } else if (units == CUP)
-            {
-                units = OZ;
-                value = value / OZ_TO_CUPS;
-            } else if (units == PINT)
-            {
-                units = OZ;
-                value = value / OZ_TO_PINTS;
-            } else if (units == QT)
-            {
-                units = OZ;
-                value = value / OZ_TO_QTS;
-            }
-            if (units == OZ && toSystem == METRIC)
-            {
-                units = ML;
-                value = value * OZ_TO_ML;
-            }
+            value = value * INCH_TO_MM;
+            units = MM;
+            return toString(round) + " " + ingredientRemainder.trim();
+        }
+        if (units == MM && toSystem == IMPERIAL)
+        {
+            value = value / INCH_TO_MM;
+            units = INCH;
+            return toString(round) + " " + ingredientRemainder.trim();
+        }
+        if (units == CM && toSystem == IMPERIAL)
+        {
+            value = value / INCH_TO_MM * 10d;
+            units = INCH;
+            return toString(round) + " " + ingredientRemainder.trim();
+        }
+        if (units == INCH || units == CM || units == MM)
+        {
+            return toString(round) + " " + ingredientRemainder.trim();
+        }
+        value = value * toServings / fromServings;
+        if (units == OZ && isMass(ingredientRemainder))
+        {
+            units = LB;
+            value = value / LB_TO_OZ;
+        }
+        if (units == LB)
+        {
+            units = OZ;
+            value = value * LB_TO_OZ;
             if (toSystem == IMPERIAL)
             {
-                if (units == ML)
+                if (value >= LB_TO_OZ)
                 {
-                    units = OZ;
-                    value = value / OZ_TO_ML;
+                    value = value / LB_TO_OZ;
+                    units = LB;
                 }
-                if (units == OZ)
+            } else
+            {
+                units = GRAM;
+                value = value * OZ_TO_G;
+                if (value > 490 && value < 510 || value > 800)
                 {
-                    doBestGuessImperial();
+                    value = value / 1000;
+                    units = KG;
                 }
             }
+            return toString(round) + " " + ingredientRemainder.trim();
         }
-        return toString() + " " + ingredientRemainder.trim();
+        if (units == DASH)
+        {
+            units = OZ;
+            value = value / OZ_TO_DASH;
+        } else if (units == SMIDGEN)
+        {
+            units = OZ;
+            value = value / OZ_TO_SMIDGEN;
+        } else if (units == PINCH)
+        {
+            units = OZ;
+            value = value / OZ_TO_PINCH;
+        } else if (units == TSP)
+        {
+            units = OZ;
+            value = value / OZ_TO_TSP;
+        } else if (units == TBSP)
+        {
+            units = OZ;
+            value = value / OZ_TO_TBSP;
+        } else if (units == CUP)
+        {
+            units = OZ;
+            value = value / OZ_TO_CUPS;
+        } else if (units == PINT)
+        {
+            units = OZ;
+            value = value / OZ_TO_PINTS;
+        } else if (units == QT)
+        {
+            units = OZ;
+            value = value / OZ_TO_QTS;
+        }
+        if (units == OZ && toSystem == METRIC)
+        {
+            units = ML;
+            value = value * OZ_TO_ML;
+        }
+        if (toSystem == IMPERIAL)
+        {
+            if (units == ML)
+            {
+                units = OZ;
+                value = value / OZ_TO_ML;
+            }
+            if (units == OZ)
+            {
+                doBestGuessImperial();
+            }
+        }
+
+        return toString(round) + " " + ingredientRemainder.trim();
     }
 
 
@@ -1052,6 +1050,7 @@ public class UnitsConverter
 
     /**
      * Convert measurements in directions
+     *
      * @param directions
      * @param fromServings
      * @param toServings
@@ -1066,9 +1065,9 @@ public class UnitsConverter
         boolean found;
         Pattern pattern;
         Matcher matcher;
-        for(String ingredientDetect : INGREDIENT_DETECT)
+        for (String ingredientDetect : INGREDIENT_DETECT)
         {
-            found=true;
+            found = true;
             pattern = Pattern.compile(ingredientDetect);
             matcher = pattern.matcher(newDirections);
             String newPhrase;
@@ -1077,12 +1076,28 @@ public class UnitsConverter
                 if (matcher.find())
                 {
                     phrase = matcher.group(0);
-                    newPhrase = convert(phrase, fromServings, toServings, fromSystem, toSystem);
-                    newDirections = newDirections.replace(phrase.trim(), newPhrase.trim());
+                    newPhrase = convert(phrase, fromServings, toServings, fromSystem, toSystem, false);
+                    newDirections = newDirections.replace(phrase, (phrase.matches("\\s.+") ? " " : "") + newPhrase);
                 } else
                 {
                     found = false;
                 }
+            }
+        }
+        found = true;
+        pattern = Pattern.compile(INGREDIENT_DETECT[0]);
+        matcher = pattern.matcher(newDirections);
+        String newPhrase;
+        while (found)
+        {
+            if (matcher.find())
+            {
+                phrase = matcher.group(0);
+                newPhrase = convert(phrase, toServings, toServings, toSystem, toSystem, true);
+                newDirections = newDirections.replace(phrase, (phrase.matches("\\s.+") ? " " : "") + newPhrase.trim());
+            } else
+            {
+                found = false;
             }
         }
         return newDirections;

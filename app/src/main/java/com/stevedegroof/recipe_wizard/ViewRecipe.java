@@ -115,27 +115,26 @@ public class ViewRecipe extends StandardActivity
     {
         recalculatedRecipe = new Recipe();
         String ingredients = recipe.getIngredients();
-        String ingredientArray[] = ingredients.split("\n");
-        ingredients = "";
-        for (int i = 0; i < ingredientArray.length; i++)
+        String directions = recipe.getDirections();
+        if (servings != recipe.getServings() || isMetric != recipe.isMetric())
         {
-            ingredients += new UnitsConverter().convert(ingredientArray[i], recipe.getServings(), servings,
+            String ingredientArray[] = ingredients.split("\n");
+            ingredients = "";
+            for (int i = 0; i < ingredientArray.length; i++)
+            {
+                ingredients += new UnitsConverter().convert(ingredientArray[i], recipe.getServings(), servings,
+                        recipe.isMetric() ? UnitsConverter.METRIC : UnitsConverter.IMPERIAL,
+                        isMetric ? UnitsConverter.METRIC : UnitsConverter.IMPERIAL, true) + "\n";
+            }
+            recalculatedRecipe.setIngredients(ingredients);
+            recalculatedRecipe.setMetric(isMetric);
+            recalculatedRecipe.setServings(servings);
+            recalculatedRecipe.setTitle(recipe.getTitle());
+            directions = new UnitsConverter().convertDirections(directions, recipe.getServings(), servings,
                     recipe.isMetric() ? UnitsConverter.METRIC : UnitsConverter.IMPERIAL,
                     isMetric ? UnitsConverter.METRIC : UnitsConverter.IMPERIAL) + "\n";
+            recalculatedRecipe.setDirections(directions);
         }
-        recalculatedRecipe.setIngredients(ingredients);
-        recalculatedRecipe.setMetric(isMetric);
-        recalculatedRecipe.setServings(servings);
-        recalculatedRecipe.setTitle(recipe.getTitle());
-        TextView view = findViewById(R.id.servingsText);
-        view.setText("" + servings + " " + getResources().getString(R.string.servings));
-        view = findViewById(R.id.viewRecipeIngredientsText);
-        view.setText(ingredients);
-        String directions = new UnitsConverter().convertDirections(recipe.getDirections(), recipe.getServings(), servings,
-                recipe.isMetric() ? UnitsConverter.METRIC : UnitsConverter.IMPERIAL,
-                isMetric ? UnitsConverter.METRIC : UnitsConverter.IMPERIAL) + "\n";
-        view = findViewById(R.id.viewRecipeDirectionsText);
-        recalculatedRecipe.setDirections(directions);
         String[] lines = directions.split("\n");
         directions = "";
         for (int i = 0; i < lines.length; i++)
@@ -145,6 +144,11 @@ public class ViewRecipe extends StandardActivity
                 directions += "" + (i + 1) + ". " + lines[i] + "\n\n";
             }
         }
+        TextView view = findViewById(R.id.servingsText);
+        view.setText("" + servings + " " + getResources().getString(R.string.servings));
+        view = findViewById(R.id.viewRecipeIngredientsText);
+        view.setText(ingredients);
+        view = findViewById(R.id.viewRecipeDirectionsText);
         view.setText(directions);
     }
 
