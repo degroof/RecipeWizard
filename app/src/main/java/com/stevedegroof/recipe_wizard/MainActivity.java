@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,12 +32,53 @@ import java.io.OutputStream;
 public class MainActivity extends StandardActivity
 {
     private int importMode = IMPORT_APPEND;
+    private String searchString = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        SearchView searchView = (SearchView) findViewById(R.id.searchView);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener()
+        {
+            @Override
+            public boolean onQueryTextSubmit(String query)
+            {
+                callSearch(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText)
+            {
+                callSearch(newText);
+                return true;
+            }
+
+        });
+    }
+
+
+    /**
+     * user typed or deleted search text
+     *
+     * @param query
+     */
+    public void callSearch(String query)
+    {
+        searchString = query;
+        fillList();
+    }
+
+    /**
+     * Show keyboard if user taps anywhere in search field
+     *
+     * @param v
+     */
+    public void searchTapped(View v)
+    {
+        ((SearchView) findViewById(R.id.searchView)).onActionViewExpanded();
     }
 
     /**
@@ -49,6 +91,33 @@ public class MainActivity extends StandardActivity
         fillList();
     }
 
+    /**
+     * If the recipe text contains the search string (or all of the comma-delimited strings), return true
+     *
+     * @param recipe
+     * @param query
+     * @return
+     */
+    private boolean searchMatches(Recipe recipe, String query)
+    {
+        boolean matches = false;
+        String recipeText = recipe.toPlainText().toLowerCase();
+        if (query.contains(","))
+        {
+            matches = true;
+            for (String searchTerm : query.split(","))
+            {
+                if (!recipeText.contains(searchTerm.toLowerCase().trim()))
+                {
+                    matches = false;
+                }
+            }
+        } else
+        {
+            matches = recipeText.contains(query.toLowerCase().trim());
+        }
+        return matches;
+    }
 
     /**
      * Display the list of recipe names
@@ -60,24 +129,27 @@ public class MainActivity extends StandardActivity
         Recipes recipes = Recipes.getInstance();
         for (int i = 0; i < recipes.getList().size(); i++)
         {
-            final TextView recipeNameText = new TextView(getApplicationContext());
-            recipeNameText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-            recipeNameText.setPadding(16, 0, 0, 0);
-            recipeNameText.setText(recipes.getList().get(i).getTitle());
-            recipeNameText.setHint(Integer.toString(i));
-            recipeNameText.setOnClickListener(
-                    new View.OnClickListener()
-                    {
-                        @Override
-                        public void onClick(View view)
+            if (searchString.isEmpty() || searchMatches(recipes.getList().get(i), searchString))
+            {
+                final TextView recipeNameText = new TextView(getApplicationContext());
+                recipeNameText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+                recipeNameText.setPadding(16, 0, 0, 0);
+                recipeNameText.setText(recipes.getList().get(i).getTitle());
+                recipeNameText.setHint(Integer.toString(i));
+                recipeNameText.setOnClickListener(
+                        new View.OnClickListener()
                         {
-                            view.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                            int index = Integer.parseInt(((TextView) view).getHint().toString());
-                            viewRecipe(index);
+                            @Override
+                            public void onClick(View view)
+                            {
+                                view.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                                int index = Integer.parseInt(((TextView) view).getHint().toString());
+                                viewRecipe(index);
+                            }
                         }
-                    }
-            );
-            recipeList.addView(recipeNameText);
+                );
+                recipeList.addView(recipeNameText);
+            }
         }
     }
 
