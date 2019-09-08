@@ -92,31 +92,38 @@ public class MainActivity extends StandardActivity
     }
 
     /**
-     * If the recipe text contains the search string (or all of the comma-delimited strings), return true
+     * Set the match score for the recipe.
      *
      * @param recipe
      * @param query
-     * @return
      */
-    private boolean searchMatches(Recipe recipe, String query)
+    private void filterRecipe(Recipe recipe, String query)
     {
-        boolean matches = false;
         String recipeText = recipe.toPlainText().toLowerCase();
+        String ingredients = recipe.getIngredients();
+        double score = 1d;
         if (query.contains(","))
         {
-            matches = true;
+            Recipes.getInstance().setSortOn(Recipes.SCORE);
+            int matchCount = 0;
             for (String searchTerm : query.split(","))
             {
-                if (!recipeText.contains(searchTerm.toLowerCase().trim()))
+                if (!searchTerm.trim().isEmpty() && ingredients.contains(searchTerm.toLowerCase().trim()))
                 {
-                    matches = false;
+                    matchCount++;
                 }
             }
+            recipe.setMatchingIngredients(matchCount);
+            recipe.setTotalIngredients(ingredients.split("\n").length);
+            double ingredientCount = (double) (recipe.getTotalIngredients());
+            score = 0d;
+            if (ingredientCount > 0d) score = ((double) matchCount) / ingredientCount;
         } else
         {
-            matches = recipeText.contains(query.toLowerCase().trim());
+            Recipes.getInstance().setSortOn(Recipes.NAME);
+            score = recipeText.contains(query.toLowerCase().trim()) ? 1d : 0d;
         }
-        return matches;
+        recipe.setSortScore(score);
     }
 
     /**
@@ -127,14 +134,27 @@ public class MainActivity extends StandardActivity
         LinearLayout recipeList = findViewById(R.id.recipeListLayout);
         recipeList.removeAllViews(); //delete any existing
         Recipes recipes = Recipes.getInstance();
+        if (searchString.isEmpty()) Recipes.getInstance().setSortOn(Recipes.NAME);
         for (int i = 0; i < recipes.getList().size(); i++)
         {
-            if (searchString.isEmpty() || searchMatches(recipes.getList().get(i), searchString))
+            filterRecipe(recipes.getList().get(i), searchString);
+        }
+        recipes.sort();
+        for (int i = 0; i < recipes.getList().size(); i++)
+        {
+            if (recipes.getList().get(i).getSortScore() > 0d)
             {
                 final TextView recipeNameText = new TextView(getApplicationContext());
                 recipeNameText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+                recipeNameText.setBackgroundColor(getResources().getColor(R.color.colorTextBackground));
+                recipeNameText.setTextColor(getResources().getColor(R.color.colorText));
                 recipeNameText.setPadding(16, 0, 0, 0);
-                recipeNameText.setText(recipes.getList().get(i).getTitle());
+                String recipeTitle = recipes.getList().get(i).getTitle();
+                if (recipes.getSortOn() == Recipes.SCORE)
+                {
+                    recipeTitle += " (" + recipes.getList().get(i).getMatchingIngredients() + " of " + recipes.getList().get(i).getTotalIngredients() + ")";
+                }
+                recipeNameText.setText(recipeTitle);
                 recipeNameText.setHint(Integer.toString(i));
                 recipeNameText.setOnClickListener(
                         new View.OnClickListener()

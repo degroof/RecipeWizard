@@ -30,6 +30,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageButton
+                style="@style/RwImageButton"
                 android:id="@+id/viewRecipeEditButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -47,6 +48,7 @@
                 app:srcCompat="@drawable/baseline_create_black_18dp" />
 
             <ImageButton
+                style="@style/RwImageButton"
                 android:id="@+id/viewRecipeShareButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -65,6 +67,7 @@
 
             <ImageButton
                 android:id="@+id/viewRecipeDeleteButton"
+                style="@style/RwImageButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -114,6 +117,7 @@
                     android:orientation="horizontal">
 
                     <ImageButton
+                        style="@style/RwImageButton"
                         android:id="@+id/imageButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -137,6 +141,7 @@
                         tools:layout_conversion_absoluteWidth="50dp" />
 
                     <ImageButton
+                        style="@style/RwImageButton"
                         android:id="@+id/imageButton2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -150,18 +155,19 @@
 
                     <ToggleButton
                         android:id="@+id/measurementSwitch"
+                        style="@style/RwToggleButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="24dp"
                         android:layout_marginEnd="8dp"
                         android:onClick="setMeasurementSystem"
-                        app:layout_constraintStart_toEndOf="@+id/imageButton2"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
                         android:text=""
                         android:textOff="@string/imperial"
-                        android:textOn="@string/metric" />
+                        android:textOn="@string/metric"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/imageButton2"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

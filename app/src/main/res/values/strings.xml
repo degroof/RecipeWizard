@@ -51,7 +51,12 @@
         "If you get this, go into your phone's settings, find the app permissions for Recipe Wizard, and explicitly turn on the camera permissions."
     </string>
     <string name="help2">
-        "This screen lists all the available recipes in your collection. Tapping on the name of a recipe lets you view the details."
+        "This screen lists all the available recipes in your collection. Tapping on the name of a recipe lets you view the details.\n"
+    </string>
+    <string name="help21">
+        "The search bar lets you find recipes in your collection. Typing a single word or phrase will bring up all"
+        "the recipes that contain that word or phrase, sorted by title. Typing a list of words or phrases will list all the"
+        "recipes that contain at least one of them in the ingredients, sorted by best match.\n"
     </string>
     <string name="help3">
         "The Add button allows you to add a new recipe. You can type it in manually, or capture it from text, an image, or the camera."

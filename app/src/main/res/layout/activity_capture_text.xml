@@ -39,6 +39,7 @@
 
         <ImageButton
             android:id="@+id/captureTextDoneButton"
+            style="@style/RwImageButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -56,6 +57,7 @@
 
         <ImageButton
             android:id="@+id/captureTextScanButton"
+            style="@style/RwImageButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -73,6 +75,7 @@
 
         <ImageButton
             android:id="@+id/captureTextImageButton"
+            style="@style/RwImageButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"

@@ -24,6 +24,20 @@ public class Recipes
     {
     }.getType();
     private ArrayList<Recipe> list = new ArrayList<Recipe>();
+    public static final int NAME = 0;
+    public static final int SCORE = 1;
+
+    public int getSortOn()
+    {
+        return sortOn;
+    }
+
+    public void setSortOn(int sortOn)
+    {
+        this.sortOn = sortOn;
+    }
+
+    private int sortOn = NAME;
 
     private Recipes()
     {

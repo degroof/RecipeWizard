@@ -5,20 +5,8 @@
     android:id="@+id/constraintLayout2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorTextBackground"
     tools:context=".MainActivity">
-
-    <SearchView
-        android:id="@+id/searchView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/custom_border"
-        android:imeOptions="flagNoFullscreen"
-        android:onClick="searchTapped"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mainButtonBarLayout" />
 
     <ScrollView
         android:id="@+id/helpContentScrollView"
@@ -42,6 +30,19 @@
             android:showDividers="middle" />
     </ScrollView>
 
+    <SearchView
+        android:id="@+id/searchView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/custom_border"
+        android:imeOptions="flagNoFullscreen"
+        android:onClick="searchTapped"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mainButtonBarLayout" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/mainButtonBarLayout"
         android:layout_width="0dp"
@@ -53,6 +54,7 @@
 
         <ImageButton
             android:id="@+id/addButton"
+            style="@style/RwImageButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -70,6 +72,7 @@
 
         <ImageButton
             android:id="@+id/shareButton"
+            style="@style/RwImageButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -87,6 +90,7 @@
 
         <ImageButton
             android:id="@+id/importButton"
+            style="@style/RwImageButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -104,6 +108,7 @@
 
         <ImageButton
             android:id="@+id/exportButton"
+            style="@style/RwImageButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"

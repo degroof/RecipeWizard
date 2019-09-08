@@ -13,6 +13,9 @@ public class Recipe implements Comparable<Recipe>
     private int servings = 4;
     private boolean isMetric = false;
     private ArrayList<DirectionsPhrase> excludedPhrases = new ArrayList<DirectionsPhrase>();
+    private transient double sortScore = 1d;
+    private transient int matchingIngredients = 0;
+    private transient int totalIngredients = 0;
 
     /**
      * Used for sorting
@@ -23,7 +26,10 @@ public class Recipe implements Comparable<Recipe>
     @Override
     public int compareTo(Recipe recipe)
     {
-        return title.compareTo(recipe.getTitle());
+        if (Recipes.getInstance().getSortOn() == Recipes.NAME)
+            return title.compareTo(recipe.getTitle());
+        else
+            return Double.valueOf(recipe.sortScore).compareTo(Double.valueOf(sortScore));
     }
 
     public String getTitle()
@@ -100,5 +106,35 @@ public class Recipe implements Comparable<Recipe>
         if (!textContent.endsWith("\n")) textContent += "\n";
         textContent += "Serves " + getServings() + "\n";
         return textContent;
+    }
+
+    public double getSortScore()
+    {
+        return sortScore;
+    }
+
+    public void setSortScore(double sortScore)
+    {
+        this.sortScore = sortScore;
+    }
+
+    public int getMatchingIngredients()
+    {
+        return matchingIngredients;
+    }
+
+    public void setMatchingIngredients(int matchingIngredients)
+    {
+        this.matchingIngredients = matchingIngredients;
+    }
+
+    public int getTotalIngredients()
+    {
+        return totalIngredients;
+    }
+
+    public void setTotalIngredients(int totalIngredients)
+    {
+        this.totalIngredients = totalIngredients;
     }
 }

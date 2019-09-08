@@ -31,6 +31,7 @@
 
             <ImageButton
                 android:id="@+id/addEditRecipeSaveButton"
+                style="@style/RwImageButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -48,6 +49,7 @@
 
             <ImageButton
                 android:id="@+id/addEditRecipeDeleteCaptureButton"
+                style="@style/RwImageButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -64,6 +66,7 @@
 
             <ImageButton
                 android:id="@+id/addEditRecipeMagicButton"
+                style="@style/RwImageButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -125,21 +128,9 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/settingConstraintLayout"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/textView4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:text="@string/servings_label"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:layout_conversion_absoluteHeight="19dp"
-                        tools:layout_conversion_absoluteWidth="377dp" />
 
                     <EditText
                         android:id="@+id/addEditRecipeServingsText"
@@ -155,33 +146,32 @@
                         app:layout_constraintVertical_bias="0.0" />
 
                     <TextView
-                        android:id="@+id/textView5"
+                        android:id="@+id/textView4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/servings_label"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:layout_conversion_absoluteHeight="19dp"
+                        tools:layout_conversion_absoluteWidth="377dp" />
+
+                    <ToggleButton
+                        android:id="@+id/addEditRecipeUnitsSwitch"
+                        style="@style/RwToggleButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="32dp"
-                        android:text="@string/imperial"
+                        android:text="ToggleButton"
+                        android:textOff="@string/imperial"
+                        android:textOn="@string/metric"
                         app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.667"
                         app:layout_constraintStart_toEndOf="@+id/addEditRecipeServingsText"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <Switch
-                        android:id="@+id/addEditRecipeUnitsSwitch"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/textView5"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/textView6"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:text="@string/metric"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/addEditRecipeUnitsSwitch"
-                        app:layout_constraintTop_toTopOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <TextView
