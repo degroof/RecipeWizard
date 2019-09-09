@@ -7,8 +7,8 @@ android {
         applicationId "com.stevedegroof.recipe_wizard"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 8
-        versionName "1.2.0"
+        versionCode 10
+        versionName "1.2.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

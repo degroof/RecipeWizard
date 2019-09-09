@@ -5,9 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import androidx.appcompat.app.AlertDialog;
 
@@ -104,7 +104,7 @@ public class AddEditRecipe extends StandardActivity
         view.setText(recipe.getDirections());
         view = findViewById(R.id.addEditRecipeServingsText);
         view.setText(Integer.toString(recipe.getServings()));
-        Switch metricSwitch = findViewById(R.id.addEditRecipeUnitsSwitch);
+        ToggleButton metricSwitch = findViewById(R.id.addEditRecipeUnitsSwitch);
         metricSwitch.setChecked(recipe.isMetric());
     }
 
@@ -151,7 +151,7 @@ public class AddEditRecipe extends StandardActivity
         {
             recipe.setServings(4);
         }
-        Switch metricSwitch = findViewById(R.id.addEditRecipeUnitsSwitch);
+        ToggleButton metricSwitch = findViewById(R.id.addEditRecipeUnitsSwitch);
         recipe.setMetric(metricSwitch.isChecked());
         recipes.sort();
         index = recipes.getList().indexOf(recipe);
@@ -262,7 +262,7 @@ public class AddEditRecipe extends StandardActivity
                 targetView.setText(recipeParser.getDirections());
                 targetView = findViewById(R.id.addEditRecipeServingsText);
                 targetView.setText(Integer.toString(recipeParser.getServings()));
-                Switch metricSwitch = findViewById(R.id.addEditRecipeUnitsSwitch);
+                ToggleButton metricSwitch = findViewById(R.id.addEditRecipeUnitsSwitch);
                 metricSwitch.setChecked(recipeParser.isMetric());
                 Toast toast = Toast.makeText(getApplicationContext(), R.string.capturedPrompt, Toast.LENGTH_LONG);
                 toast.setMargin(TOAST_MARGIN, TOAST_MARGIN);
