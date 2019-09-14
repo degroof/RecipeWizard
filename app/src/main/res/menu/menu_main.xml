@@ -4,6 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".StandardActivity">
 
+    <item
+        android:id="@+id/action_home"
+        android:icon="@drawable/outline_home_white_18dp"
+        android:title="@string/home"
+        app:showAsAction="ifRoom" />
+
+
+    <item
+        android:id="@+id/action_cart"
+        android:icon="@drawable/outline_shopping_cart_white_18dp"
+        android:title="@string/cart"
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_help"

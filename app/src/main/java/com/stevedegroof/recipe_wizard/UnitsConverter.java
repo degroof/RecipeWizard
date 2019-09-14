@@ -32,6 +32,9 @@ public class UnitsConverter
     private static final int CM = 14;
     private static final int INCH = 15;
     private static final int QT = 16;
+    private static final int CAN = 17;
+    private static final int PKG = 18;
+
     //conversion factors
     private static final double TSP_TO_ML = 4.93d;
     private static final double TBSP_TO_ML = 14.79d;
@@ -64,18 +67,22 @@ public class UnitsConverter
     //used to determine if ounces are mass or volume
     private static final String DRY_INGREDIENTS[] = {"noodles", "ginger root", "chocolate chips",
             "asparagus", "thyme", "tomatoes", "almonds", "cheese", "prosciutto", "arugula", "macaroni",
-            "meat", "potatoes", "barramundi", "greens", "beef", "nuts", "beans", "mushrooms"};
+            "meat", "potatoes", "barramundi", "greens", "beef", "nuts", "beans", "mushrooms", "sausage",
+            "chicken"};
     private static final String WET_INGREDIENTS[] = {"sauce", "paste", "soup", "bouillon", "juice",
             "liqueur", "extract", "puree", "purée", "stock", "salsa", "mayo", "mayonnaise", "dressing",
-            "milk"};
+            "milk", "broth"};
+    private static final String PREP_WORDS[] = {"chopped", "diced", "quartered", "mashed", "shredded",
+            "minced", "cubed", "cooked", "uncooked", "drained", "undrained", "chilled", "cold",
+            "halved", "seeded", "peeled", "divided"};
 
     private double value = 0; //numeric part of the quantity
     private int units = NONE; //units part of the quantity
     private ArrayList<DirectionsPhrase> excludedPhrases; //phrases in the directions that should not be scales
-
+    private int detectedSystem = IMPERIAL;
 
     /**
-     * Try to guess if the ingredien is mass vs volume (used for ounces)
+     * Try to guess if the ingredient is mass vs volume (used for ounces)
      *
      * @param ingredient
      * @return
@@ -426,6 +433,7 @@ public class UnitsConverter
             return new DecimalFormat("#").format(Math.round(value));
         }
     }
+
     /**
      * Round and format pints
      *
@@ -518,6 +526,10 @@ public class UnitsConverter
                 return round ? roundGeneric(value).trim() + " kg" : df.format(value) + " kg";
             case TBSP:
                 return round ? new DecimalFormat("#").format(Math.round(value)) + " tbsp" : df.format(value) + " tbsp";
+            case CAN:
+                return (round ? roundGeneric(value).trim() + " can" : df.format(value) + " can") + (value > 1d ? "s" : "");
+            case PKG:
+                return (round ? roundGeneric(value).trim() + " pkg" : df.format(value) + " pkg") + (value > 1d ? "s" : "");
             default:
                 return round ? roundGeneric(value).trim() : df.format(value);
         }
@@ -576,6 +588,10 @@ public class UnitsConverter
                 return "lb";
             case GRAM:
                 return "g";
+            case CAN:
+                return "can";
+            case PKG:
+                return "pkg";
             default:
                 return "";
         }
@@ -592,7 +608,7 @@ public class UnitsConverter
     {
         String unitWord = "";
         units = NONE;
-        String words[] = ingredient.split(" ");
+        String words[] = ingredient.split("\\s|\\t|\\xA0");
         String firstWord = "";
         String secondWord = "";
         String thirdWord = "";
@@ -658,6 +674,12 @@ public class UnitsConverter
             {
                 units = MM;
                 value = value / 10d;
+            } else if (firstWordLc.equals("can") || firstWordLc.equals("cans"))
+            {
+                units = CAN;
+            } else if (firstWordLc.equals("pkg.") || firstWordLc.equals("pkg") || firstWordLc.equals("package"))
+            {
+                units = PKG;
             } else
             {
                 units = NONE;
@@ -707,17 +729,20 @@ public class UnitsConverter
      */
     private String setQuantity(String ingredient)
     {
+        units = NONE;
+        value = 0d;
         Pattern pattern = Pattern.compile(VALUE_PARSE);
         String valueString = "";
-        String remainingIngredient = ingredient.replaceAll("\\s|\\t", " ");
+        String remainingIngredient = ingredient.replaceAll("\\s|\\t|\\xA0", " ");
         Matcher matcher = pattern.matcher(remainingIngredient);
         if (matcher.find())
         {
             valueString = matcher.group(0);
-            remainingIngredient = ingredient.substring(valueString.length());
+            remainingIngredient = remainingIngredient.substring(valueString.length());
             String unitWord = setUnits(remainingIngredient);
             if (!unitWord.isEmpty())
             {
+                remainingIngredient = remainingIngredient.replaceAll("\\s|\\t|\\xA0", " ");
                 remainingIngredient = remainingIngredient.substring(unitWord.length());
             }
         } else
@@ -743,6 +768,32 @@ public class UnitsConverter
     }
 
     /**
+     * Set quantity (value and units) from grocery list string
+     *
+     * @param ingredient
+     * @return remaining ingredient (minus quantity text)
+     */
+    private String setQuantityFromGroceryListItem(String ingredient)
+    {
+        try
+        {
+            String remainingIngredient = ingredient;
+            if (!remainingIngredient.endsWith(")") || !remainingIngredient.contains("("))
+                return remainingIngredient;
+            int quantityStart = remainingIngredient.lastIndexOf("(");
+            String quantity = remainingIngredient.substring(quantityStart + 1, remainingIngredient.length() - 1);
+            remainingIngredient = remainingIngredient.substring(0, quantityStart);
+            setQuantity(quantity + " x");
+            return remainingIngredient;
+        } catch (Exception e)
+        {
+            return ingredient;
+        }
+    }
+
+
+
+    /**
      * Convert ingredient based on servings and measurement system
      *
      * @param ingredient   ingredient string
@@ -754,6 +805,23 @@ public class UnitsConverter
      * @return converted ingredient string
      */
     String convert(String ingredient, int fromServings, int toServings, int fromSystem, int toSystem, boolean round)
+    {
+        return convert(ingredient, fromServings, toServings, fromSystem, toSystem, round, false);
+    }
+
+    /**
+     * Convert ingredient based on servings and measurement system
+     *
+     * @param ingredient   ingredient string
+     * @param fromServings servings listed in the original recipe
+     * @param toServings   servings requested by user
+     * @param fromSystem   measurement system listed in recipe
+     * @param toSystem     measurement system requested by user
+     * @param round        round to nearest practical measure
+     * @param setBaseUnits result will be in base units (oz, lb, ml, g)
+     * @return converted ingredient string
+     */
+    String convert(String ingredient, int fromServings, int toServings, int fromSystem, int toSystem, boolean round, boolean setBaseUnits)
     {
         value = 0d;
         units = NONE;
@@ -781,6 +849,11 @@ public class UnitsConverter
             value = value / INCH_TO_MM * 10d;
             units = INCH;
             return toString(round) + " " + ingredientRemainder.trim();
+        }
+        if (setBaseUnits && units == CM)
+        {
+            units = MM;
+            value = value * 10d;
         }
         if (units == INCH || units == CM || units == MM)
         {
@@ -860,7 +933,7 @@ public class UnitsConverter
                 units = OZ;
                 value = value / OZ_TO_ML;
             }
-            if (units == OZ)
+            if (units == OZ && !setBaseUnits)
             {
                 doBestGuessImperial();
             }
@@ -1157,50 +1230,57 @@ public class UnitsConverter
             {
                 if (matcher.find())
                 {
-                    phrase = matcher.group(0);
-                    int start = matcher.start(0);
-                    int end = matcher.end(0);
-                    DirectionsPhrase directionsPhrase = new DirectionsPhrase();
-                    directionsPhrase.setPhraseText(phrase);
-                    directionsPhrase.setPhraseStart(start);
-                    directionsPhrase.setPhraseEnd(end);
-                    int cStart = start - 20;
-                    if (cStart < 0) cStart = 0;
-                    int cEnd = end + 20;
-                    if (cEnd > directions.length()) cEnd = directions.length();
-                    for (int i = start; i > cStart; i--)
+                    try
                     {
-                        if ("\n,.;".contains(Character.toString(directions.charAt(i))))
+                        phrase = matcher.group(0);
+                        int start = matcher.start(0);
+                        int end = matcher.end(0);
+                        DirectionsPhrase directionsPhrase = new DirectionsPhrase();
+                        directionsPhrase.setPhraseText(phrase);
+                        directionsPhrase.setPhraseStart(start);
+                        directionsPhrase.setPhraseEnd(end);
+                        int cStart = start - 20;
+                        if (cStart < 0) cStart = 0;
+                        int cEnd = end + 20;
+                        if (cEnd > directions.length()) cEnd = directions.length();
+                        for (int i = start; i > cStart; i--)
                         {
-                            cStart = i;
+                            if ("\n,.;".contains(Character.toString(directions.charAt(i))))
+                            {
+                                cStart = i;
+                            }
                         }
-                    }
-                    boolean done = false;
-                    for (int i = cStart; i < start && !done; i++)
-                    {
-                        if (directions.charAt(i) == " ".charAt(0)) cStart = i;
-                    }
-                    done = false;
-                    int tempEnd = cEnd;
-                    for (int i = end; i < tempEnd && !done; i++)
-                    {
-                        if ("\n,.;".contains(Character.toString(directions.charAt(i))))
+                        boolean done = false;
+                        for (int i = cStart; i < start && !done; i++)
                         {
-                            cEnd = i;
-                            done = true;
+                            if (directions.charAt(i) == " ".charAt(0)) cStart = i;
                         }
-                        if (directions.charAt(i) == " ".charAt(0))
+                        done = false;
+                        int tempEnd = cEnd;
+                        for (int i = end; i < tempEnd && !done; i++)
                         {
-                            cEnd = i;
+                            if ("\n,.;".contains(Character.toString(directions.charAt(i))))
+                            {
+                                cEnd = i;
+                                done = true;
+                            }
+                            if (directions.charAt(i) == " ".charAt(0))
+                            {
+                                cEnd = i;
+                            }
                         }
-                    }
-                    if (" ,.;".contains(Character.toString(directions.charAt(cStart)))) cStart++;
-                    String context = directions.substring(cStart, cEnd);
-                    context = "..." + context.trim() + "...";
+                        if (" ,.;".contains(Character.toString(directions.charAt(cStart))))
+                            cStart++;
+                        String context = directions.substring(cStart, cEnd);
+                        context = "..." + context.trim() + "...";
 
-                    directionsPhrase.setPhraseContext(context);
+                        directionsPhrase.setPhraseContext(context);
 
-                    phrases.add(directionsPhrase);
+                        phrases.add(directionsPhrase);
+                    } catch (Exception e)
+                    {
+                        found = false;
+                    }
                 } else
                 {
                     found = false;
@@ -1209,5 +1289,137 @@ public class UnitsConverter
         }
         return phrases;
     }
+
+    /**
+     * Convert ingredients list into grocery list items
+     *
+     * @param ingredients
+     * @return
+     */
+    ArrayList<String> convertIngredientsToGroceryList(ArrayList<String> ingredients)
+    {
+        ArrayList<String> groceryList = new ArrayList<String>();
+        for (String ingredient : ingredients)
+        {
+            String name = stripPrep(setQuantity(ingredient));
+            String quantity = toString(true);
+            groceryList.add(quantity.trim().isEmpty() ? name.trim() : name.trim() + " (" + quantity + ")");
+        }
+        return groceryList;
+    }
+
+    /**
+     * Match up similar ingredients and add their quantities
+     *
+     * @param ingredients
+     * @return
+     */
+    ArrayList<String> consolidateGroceryList(ArrayList<String> ingredients)
+    {
+        ArrayList<String> result = new ArrayList<String>();
+
+        for (String thisIngredient : ingredients)
+        {
+            int thisSystem = IMPERIAL;
+            String thisName = setQuantityFromGroceryListItem(thisIngredient);
+            thisName = stripPrep(thisName);
+            int thisUnits = units;
+            boolean thisMass = isMass(thisIngredient);
+            double thisValue = value;
+            if (units == CM || units == MM || units == ML || units == KG || units == GRAM)
+            {
+                thisSystem = METRIC;
+            }
+            boolean found = false;
+            for (String otherIngredient : result)
+            {
+                int otherSystem = IMPERIAL;
+                String otherName = setQuantityFromGroceryListItem(otherIngredient);
+                otherName = stripPrep(otherName);
+                if (units == CM || units == MM || units == ML || units == KG || units == GRAM)
+                {
+                    otherSystem = METRIC;
+                }
+                int otherUnits = units;
+                boolean otherMass = isMass(otherIngredient);
+                double otherValue = value;
+                if (thisSystem == otherSystem && thisMass == otherMass && thisName.trim().equalsIgnoreCase(otherName.trim()))
+                {
+                    String newIngredient = addValues(thisValue, thisUnits, otherValue, otherUnits, thisName, thisSystem, thisMass);
+                    result.remove(otherIngredient);
+                    result.add(newIngredient);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found && !thisIngredient.trim().endsWith(":"))
+            {
+                thisIngredient = stripPrep(thisIngredient);
+                result.add(thisIngredient);
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * remove preparation text (e.g. diced, cooked) from ingredient
+     *
+     * @param name
+     * @return
+     */
+    private String stripPrep(String name)
+    {
+        String result = name;
+        for (String prep : PREP_WORDS)
+        {
+            if (result.toLowerCase().contains(", " + prep))
+            {
+                result = result.toLowerCase().replace(", " + prep, "");
+            }
+            if (result.toLowerCase().endsWith(" and " + prep))
+            {
+                result = result.toLowerCase().replace(" and " + prep, "");
+            }
+            if (result.toLowerCase().endsWith(" and " + prep + "."))
+            {
+                result = result.toLowerCase().replace(" and " + prep + ".", "");
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Add the quantities of two similar ingredients together
+     *
+     * @param thisValue
+     * @param thisUnits
+     * @param otherValue
+     * @param otherUnits
+     * @param name
+     * @param system
+     * @param isMass
+     * @return
+     */
+    private String addValues(double thisValue, int thisUnits, double otherValue, int otherUnits, String name, int system, boolean isMass)
+    {
+        DecimalFormat df = new DecimalFormat("0.0000");
+
+        units = thisUnits;
+        String thisIngredient = df.format(thisValue) + " " + getUnitsString() + " " + name;
+        units = otherUnits;
+        String otherIngredient = df.format(otherValue) + " " + getUnitsString() + " " + name;
+        convert(thisIngredient, 1, 1, system, system, false, true);
+        double newValue = value;
+        convert(otherIngredient, 1, 1, system, system, false, true);
+        value += newValue;
+        String newIngredient = df.format(value) + " " + getUnitsString() + " " + name;
+        ArrayList<String> ingredients = new ArrayList<String>();
+        ingredients.add(convert(newIngredient, 1, 1, system, system, true));
+        ingredients = convertIngredientsToGroceryList(ingredients);
+        return ingredients.get(0);
+    }
+
+
 
 }

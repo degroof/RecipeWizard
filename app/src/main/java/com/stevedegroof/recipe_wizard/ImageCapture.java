@@ -50,7 +50,7 @@ public class ImageCapture extends CommonActivity
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null && data.getData() != null)
         {
             Uri uri = data.getData();

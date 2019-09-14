@@ -6,9 +6,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import androidx.appcompat.app.AlertDialog;
+
+import java.util.ArrayList;
 
 /**
  * show recipe in view-only mode
@@ -58,7 +61,6 @@ public class ViewRecipe extends StandardActivity
                 directions += "" + (i + 1) + ". " + lines[i] + "\n\n";
             }
         }
-        //directions += "\nServes " + recipe.getServings() + "\n\n";
 
         view.setText(directions);
         ToggleButton metricSwitch = findViewById(R.id.measurementSwitch);
@@ -168,14 +170,13 @@ public class ViewRecipe extends StandardActivity
                 isMetric = currentIsMetric;
             }
         }
-        if (servings != recipe.getServings() || isMetric != recipe.isMetric())
-        {
-            TextView view = findViewById(R.id.servingsText);
-            view.setText("" + servings + " " + getResources().getString(R.string.servings));
-            ToggleButton metricSwitch = findViewById(R.id.measurementSwitch);
-            metricSwitch.setChecked(isMetric);
-            recalculateRecipe();
-        }
+
+        TextView view = findViewById(R.id.servingsText);
+        view.setText("" + servings + " " + getResources().getString(R.string.servings));
+        ToggleButton metricSwitch = findViewById(R.id.measurementSwitch);
+        metricSwitch.setChecked(isMetric);
+        recalculateRecipe();
+
     }
 
     /**
@@ -199,7 +200,7 @@ public class ViewRecipe extends StandardActivity
     {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_SUBJECT, "Recipe: " + recipe.getTitle());
+        intent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.recipe_prefix) + " " + recipe.getTitle());
         if (shareMode == SHARE_ORIGINAL)
         {
             intent.putExtra(Intent.EXTRA_TEXT, recipe.toPlainText());
@@ -208,7 +209,7 @@ public class ViewRecipe extends StandardActivity
             intent.putExtra(Intent.EXTRA_TEXT, recalculatedRecipe.toPlainText());
         }
 
-        startActivity(Intent.createChooser(intent, "Share " + recipe.getTitle()));
+        startActivity(Intent.createChooser(intent, getResources().getString(R.string.share_recipe_prefix) + " " + recipe.getTitle()));
     }
 
     /**
@@ -225,9 +226,9 @@ public class ViewRecipe extends StandardActivity
         {
             final View v = view;
             new AlertDialog.Builder(view.getContext())
-                    .setTitle("Share")
-                    .setMessage("You can share the original recipe, or the converted version. Which would you prefer?")
-                    .setPositiveButton("Original", new DialogInterface.OnClickListener()
+                    .setTitle(R.string.share)
+                    .setMessage(R.string.share_recipe_prompt)
+                    .setPositiveButton(R.string.original, new DialogInterface.OnClickListener()
                     {
                         public void onClick(DialogInterface dialog, int which)
                         {
@@ -235,7 +236,7 @@ public class ViewRecipe extends StandardActivity
                             shareRecipe(v);
                         }
                     })
-                    .setNegativeButton("Converted", new DialogInterface.OnClickListener()
+                    .setNegativeButton(R.string.converted, new DialogInterface.OnClickListener()
                     {
                         public void onClick(DialogInterface dialog, int which)
                         {
@@ -258,9 +259,9 @@ public class ViewRecipe extends StandardActivity
     {
         final View v = view;
         new AlertDialog.Builder(view.getContext())
-                .setTitle("Delete")
-                .setMessage("Do you really want to delete this recipe?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                .setTitle(R.string.delete_tc)
+                .setMessage(R.string.delete_recipe_prompt)
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
                 {
                     public void onClick(DialogInterface dialog, int which)
                     {
@@ -268,7 +269,7 @@ public class ViewRecipe extends StandardActivity
                     }
                 })
                 // A null listener allows the button to dismiss the dialog and take no further action.
-                .setNegativeButton("No", null)
+                .setNegativeButton(R.string.no, null)
                 .setIcon(android.R.drawable.ic_dialog_info)
                 .show();
     }
@@ -313,5 +314,30 @@ public class ViewRecipe extends StandardActivity
         }
     }
 
+    /**
+     * Add the ingredients of the current recipe to the grocery list
+     *
+     * @param view
+     */
+    public void addIngredientsToList(View view)
+    {
+        String ingredients = recalculatedRecipe.getIngredients();
+        if (recalculatedRecipe.getIngredients().isEmpty())
+        {
+            ingredients = recipe.getIngredients();
+        }
+        String ingredientsArray[] = ingredients.split("\n");
+        ArrayList<String> groceryListArray = new ArrayList<String>();
+        for (String ingredient : ingredientsArray)
+        {
+            groceryListArray.add(ingredient);
+        }
+        groceryListArray = new UnitsConverter().convertIngredientsToGroceryList(groceryListArray);
+        Recipes.getInstance().getGroceryList().addAll(groceryListArray);
+        Recipes.getInstance().save(getApplicationContext());
+        Toast toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.added_to_grocery_list), Toast.LENGTH_SHORT);
+        toast.setMargin(TOAST_MARGIN, TOAST_MARGIN);
+        toast.show();
+    }
 
 }

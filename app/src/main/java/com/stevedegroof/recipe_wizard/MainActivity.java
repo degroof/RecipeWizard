@@ -8,6 +8,8 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.TypedValue;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
@@ -91,6 +93,22 @@ public class MainActivity extends StandardActivity
         fillList();
     }
 
+
+    /**
+     * Hide home item
+     *
+     * @param menu
+     * @return
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        boolean result = super.onCreateOptionsMenu(menu);
+        MenuItem item = menu.findItem(R.id.action_home);
+        if (item != null)
+            item.setVisible(false);
+        return result;
+    }
     /**
      * Set the match score for the recipe.
      *
@@ -419,7 +437,7 @@ public class MainActivity extends StandardActivity
                 .setAction(Intent.ACTION_CREATE_DOCUMENT)
                 .putExtra(Intent.EXTRA_TITLE, DEFAULT_EXPORT_FILENAME)
                 .setType("text/plain");
-        startActivityForResult(Intent.createChooser(intent, "Select a location to save file"), REQUEST_EXPORT);
+        startActivityForResult(Intent.createChooser(intent, getResources().getString(R.string.select_location_prompt)), REQUEST_EXPORT);
     }
 
     /**
@@ -431,16 +449,16 @@ public class MainActivity extends StandardActivity
                 .setAction(Intent.ACTION_OPEN_DOCUMENT)
                 .putExtra(Intent.EXTRA_TITLE, DEFAULT_EXPORT_FILENAME)
                 .setType("text/plain");
-        startActivityForResult(Intent.createChooser(intent, "Select a file to load"), REQUEST_IMPORT);
+        startActivityForResult(Intent.createChooser(intent, getResources().getString(R.string.select_file_prompt)), REQUEST_IMPORT);
     }
 
     public void checkImportType(View view)
     {
         final View v = view;
         new AlertDialog.Builder(view.getContext())
-                .setTitle("Import")
-                .setMessage("You can either add to your existing recipes, or replace them. Which would you prefer?")
-                .setPositiveButton("Add", new DialogInterface.OnClickListener()
+                .setTitle(R.string.import_title)
+                .setMessage(R.string.import_prompt)
+                .setPositiveButton(R.string.add, new DialogInterface.OnClickListener()
                 {
                     public void onClick(DialogInterface dialog, int which)
                     {
@@ -448,7 +466,7 @@ public class MainActivity extends StandardActivity
                         importRecipes(v);
                     }
                 })
-                .setNegativeButton("Replace", new DialogInterface.OnClickListener()
+                .setNegativeButton(R.string.replace, new DialogInterface.OnClickListener()
                 {
                     public void onClick(DialogInterface dialog, int which)
                     {
@@ -478,14 +496,14 @@ public class MainActivity extends StandardActivity
             //share saved file
             Context context = getApplicationContext();
             File filelocation = new File(context.getFilesDir() + "/" + BOOK_FILE_NAME);
-            Uri path = FileProvider.getUriForFile(context, "com.stevedegroof.recipe_wizard.provider", filelocation);
+            Uri path = FileProvider.getUriForFile(context, getResources().getString(R.string.provider_name), filelocation);
             Intent emailIntent = new Intent(Intent.ACTION_SEND);
             emailIntent.setType("vnd.android.cursor.dir/email");
-            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Recipe Book");
-            emailIntent.putExtra(Intent.EXTRA_TEXT, "Save attachment and import into Recipe Wizard");
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.recipe_book));
+            emailIntent.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.email_body));
             emailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             emailIntent.putExtra(Intent.EXTRA_STREAM, path);
-            startActivity(Intent.createChooser(emailIntent, "Share Recipe Book"));
+            startActivity(Intent.createChooser(emailIntent, getResources().getString(R.string.share_book)));
         } catch (Exception e)
         {
             Toast toast = Toast.makeText(getApplicationContext(), "Unable to share recipe book. " + e.getMessage(), Toast.LENGTH_LONG);

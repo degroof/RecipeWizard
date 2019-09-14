@@ -67,7 +67,7 @@ public class DirectionsAdjustment extends CommonActivity
     public void save(View view)
     {
         LinearLayout phraseList = findViewById(R.id.phraseList);
-        ArrayList<DirectionsPhrase> exludedPhrases = new ArrayList<DirectionsPhrase>();
+        ArrayList<DirectionsPhrase> excludedPhrases = new ArrayList<DirectionsPhrase>();
         for (int i = 0; i < phraseList.getChildCount(); i++)
         {
             View item = phraseList.getChildAt(i);
@@ -75,11 +75,11 @@ public class DirectionsAdjustment extends CommonActivity
             {
                 if (((CheckBox) item).isChecked())
                 {
-                    exludedPhrases.add(phrases.get(i));
+                    excludedPhrases.add(phrases.get(i));
                 }
             }
         }
-        recipe.setExcludedPhrases(exludedPhrases);
+        recipe.setExcludedPhrases(excludedPhrases);
         Recipes.getInstance().save(getApplicationContext());
         finish();
     }

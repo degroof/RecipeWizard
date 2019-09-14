@@ -5,8 +5,8 @@ package com.stevedegroof.recipe_wizard;
  */
 public class RecipeParser
 {
-    public static final String[] IMPERIAL_DETECTION_UNITS = {"tbsp", "tablespoons", "tablespoon", "tsp", "teaspoons", "teaspoon", "oz", "cup", "cups", "c", "lb", "pound", "lbs", "pounds"};
-    public static final String[] METRIC_DETECTION_UNITS = {"ml", "g", "kg", "gram", "grams", "l", "liter", "liters", "litre", "litres"};
+    public static final String[] IMPERIAL_DETECTION_UNITS = {"tbsp", "tablespoons", "tablespoon", "tsp", "teaspoons", "teaspoon", "oz", "cup", "cups", "c", "lb", "pound", "lbs", "pounds", "can", "package", "pkg"};
+    public static final String[] METRIC_DETECTION_UNITS = {"ml", "g", "kg", "gram", "grams", "l", "liter", "liters", "litre", "litres", "can", "package", "pkg"};
     private String[] lines = null;
 
     private int titleStart = -1;
@@ -30,7 +30,7 @@ public class RecipeParser
      * @param text
      * @return
      */
-    private String toTitleCase(String text)
+    public static String toTitleCase(String text)
     {
         if (text == null || text.isEmpty())
         {
@@ -86,7 +86,7 @@ public class RecipeParser
         String ingredients = "";
         for (int i = ingredientsStart + 1; i < directionsStart; i++)
         {
-            if (!lines[i].isEmpty() && !isSpecialLine(lines[i]))
+            if (!lines[i].trim().isEmpty() && !isSpecialLine(lines[i]))
             {
                 if (!ingredients.isEmpty() && (isVerbatim || lines[i].matches(UnitsConverter.VALUE_PARSE+".*")))
                 {
@@ -124,7 +124,7 @@ public class RecipeParser
             try
             {
                 String strippedLine = line.toLowerCase().replaceAll("[0-9¼½¾⅐⅑⅒⅓⅔⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞/\\.-]", "").trim();
-                String units = strippedLine.split("\\s")[0];
+                String units = strippedLine.split("\\s|\\t|\\xA0")[0];
                 boolean found = false;
                 for (int i = 0; i < IMPERIAL_DETECTION_UNITS.length && !found; i++)
                 {
@@ -162,7 +162,7 @@ public class RecipeParser
         String directions = "";
         for (int i = directionsStart + 1; i < lines.length; i++)
         {
-            if (!lines[i].isEmpty() && !isSpecialLine(lines[i]))
+            if (!lines[i].trim().isEmpty() && !isSpecialLine(lines[i]))
             {
                 String line = lines[i];
                 if (line.matches("[0-9]+[).] .+"))
@@ -227,7 +227,7 @@ public class RecipeParser
             this.servings = servings;
         } else
         {
-            String[] elements = servingsString.split("\\s|\\.|\\t");
+            String[] elements = servingsString.split("\\s|\\xA0|\\.|\\t");
             for (int i = 0; i < elements.length; i++)
             {
                 try
@@ -328,7 +328,7 @@ public class RecipeParser
             try
             {
                 String strippedLine = line.toLowerCase().replaceAll("[0-9¼½¾⅐⅑⅒⅓⅔⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞/\\.-]", "").trim();
-                String units = strippedLine.split("\\s")[0];
+                String units = strippedLine.split("\\s|\\t|\\xA0")[0];
                 boolean found = false;
                 for (int j = 0; j < IMPERIAL_DETECTION_UNITS.length && !found; j++)
                 {

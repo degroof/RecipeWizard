@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CaptureText">
+    tools:context=".GroceryList">
 
     <EditText
-        android:id="@+id/captureText"
+        android:id="@+id/groceryList"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
@@ -16,7 +16,7 @@
         android:layout_marginBottom="8dp"
         android:ems="10"
         android:gravity="start|top"
-        android:hint="@string/capture_hint"
+        android:hint="@string/grocery_list_hint"
         android:inputType="textMultiLine"
         android:minLines="20"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -32,65 +32,47 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/captureText"
+        app:layout_constraintBottom_toTopOf="@+id/groceryList"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
-            android:id="@+id/captureTextDoneButton"
+            android:id="@+id/groceryListShareButton"
             style="@style/RwImageButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
-            android:contentDescription="@string/done"
-            android:onClick="done"
+            android:contentDescription="@string/delete"
+            android:onClick="share"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/captureTextImageButton"
+            app:layout_constraintStart_toEndOf="@+id/groceryListClearButton"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0"
-            app:srcCompat="@drawable/baseline_check_circle_black_18dp" />
+            app:srcCompat="@drawable/baseline_share_black_18dp" />
 
         <ImageButton
-            android:id="@+id/captureTextScanButton"
+            android:id="@+id/groceryListClearButton"
             style="@style/RwImageButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:contentDescription="@string/take_picture"
-            android:onClick="grabFromCamera"
-            android:text="@string/camera"
+            android:contentDescription="@string/share_grocery_list"
+            android:onClick="checkDelete"
+            android:text="@string/share_grocery_list"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/captureTextImageButton"
+            app:layout_constraintEnd_toStartOf="@+id/groceryListShareButton"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/baseline_camera_alt_black_18dp" />
+            app:srcCompat="@drawable/baseline_delete_black_18dp" />
 
-        <ImageButton
-            android:id="@+id/captureTextImageButton"
-            style="@style/RwImageButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:contentDescription="@string/get_image"
-            android:onClick="grabFromImage"
-            android:text="@string/image"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/captureTextDoneButton"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/captureTextScanButton"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"
-            app:srcCompat="@drawable/baseline_image_black_18dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

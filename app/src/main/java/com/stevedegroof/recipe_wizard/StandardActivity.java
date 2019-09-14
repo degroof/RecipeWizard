@@ -33,12 +33,30 @@ public class StandardActivity extends CommonActivity
         if (id == R.id.action_help)
         {
             help();
+        } else if (id == R.id.action_home)
+        {
+            goHome();
+        } else if (id == R.id.action_cart)
+        {
+            groceryList();
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * open grocery list screen
+     */
+    private void groceryList()
+    {
+        Intent intent = new Intent(this, GroceryList.class);
+        startActivityForResult(intent, 1);
+    }
 
+
+    /**
+     * open help screen
+     */
     public void help()
     {
         Intent intent = new Intent(this, Help.class);

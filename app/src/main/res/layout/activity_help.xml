@@ -50,6 +50,29 @@
                 android:text="@string/help1" />
 
             <TextView
+                android:id="@+id/textView51"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:paddingTop="16dp"
+                android:text="@string/help_menubar"
+                android:textSize="24sp" />
+
+            <ImageView
+                android:id="@+id/imageView20"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/menu_icons" />
+
+            <TextView
+                android:id="@+id/textView50"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/help19" />
+
+            <TextView
                 android:id="@+id/textView47"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -214,6 +237,26 @@
                     android:layout_marginStart="8dp"
                     android:layout_weight="1"
                     android:text="@string/help9" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="64dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/outline_add_shopping_cart_black_18dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:text="@string/help22" />
 
             </LinearLayout>
         <LinearLayout
@@ -458,6 +501,21 @@
                     android:text="@string/help17" />
 
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/helpGroceryList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:paddingTop="16dp"
+                android:text="@string/help_grocery_list"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/textView19"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/help23" />
 
 
         </LinearLayout>

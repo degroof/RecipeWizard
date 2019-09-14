@@ -30,8 +30,8 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageButton
-                style="@style/RwImageButton"
                 android:id="@+id/viewRecipeEditButton"
+                style="@style/RwImageButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -48,8 +48,8 @@
                 app:srcCompat="@drawable/baseline_create_black_18dp" />
 
             <ImageButton
-                style="@style/RwImageButton"
                 android:id="@+id/viewRecipeShareButton"
+                style="@style/RwImageButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -59,11 +59,28 @@
                 android:contentDescription="@string/share_recipe"
                 android:onClick="checkShareType"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/viewRecipeDeleteButton"
+                app:layout_constraintEnd_toStartOf="@+id/viewRecipeAddButton"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/viewRecipeEditButton"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/baseline_share_black_18dp" />
+
+            <ImageButton
+                android:id="@+id/viewRecipeAddButton"
+                style="@style/RwImageButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:contentDescription="@string/delete"
+                android:onClick="addIngredientsToList"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/viewRecipeDeleteButton"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/viewRecipeShareButton"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/outline_add_shopping_cart_black_18dp" />
 
             <ImageButton
                 android:id="@+id/viewRecipeDeleteButton"
@@ -78,7 +95,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/viewRecipeShareButton"
+                app:layout_constraintStart_toEndOf="@+id/viewRecipeAddButton"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/baseline_delete_black_18dp" />
 

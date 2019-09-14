@@ -27,17 +27,13 @@ public class Recipes
     public static final int NAME = 0;
     public static final int SCORE = 1;
 
-    public int getSortOn()
-    {
-        return sortOn;
-    }
-
-    public void setSortOn(int sortOn)
-    {
-        this.sortOn = sortOn;
-    }
-
     private int sortOn = NAME;
+
+    //grocery list
+    private ArrayList<String> groceryList = new ArrayList<String>();
+    private Type groceriesType = new TypeToken<ArrayList<String>>()
+    {
+    }.getType();
 
     private Recipes()
     {
@@ -90,6 +86,28 @@ public class Recipes
             list = gson.fromJson(json, recipesType);
             sort();
         }
+        json = "";
+        try
+        {
+            FileInputStream fis = ctx.openFileInput(CommonActivity.GROCERY_FILE_NAME);
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader bufferedReader = new BufferedReader(isr);
+            sb = new StringBuilder();
+            String line;
+            while ((line = bufferedReader.readLine()) != null)
+            {
+                sb.append(line);
+            }
+            json = sb.toString();
+            bufferedReader.close();
+        } catch (IOException e)
+        {
+        }
+        if (!json.isEmpty())
+        {
+            groceryList = gson.fromJson(json, groceriesType);
+            sort();
+        }
     }
 
     /**
@@ -102,12 +120,21 @@ public class Recipes
         FileOutputStream outputStream;
 
         final Gson gson = new Gson();
-        String serializedObject = gson.toJson(list, recipesType);
+        String serializedRecipes = gson.toJson(list, recipesType);
+        String serializedGroceries = gson.toJson(groceryList, groceriesType);
 
         try
         {
             outputStream = ctx.openFileOutput(CommonActivity.RECIPE_FILE_NAME, Context.MODE_PRIVATE);
-            outputStream.write(serializedObject.getBytes());
+            outputStream.write(serializedRecipes.getBytes());
+            outputStream.close();
+        } catch (Exception e)
+        {
+        }
+        try
+        {
+            outputStream = ctx.openFileOutput(CommonActivity.GROCERY_FILE_NAME, Context.MODE_PRIVATE);
+            outputStream.write(serializedGroceries.getBytes());
             outputStream.close();
         } catch (Exception e)
         {
@@ -133,4 +160,23 @@ public class Recipes
         return textContent;
     }
 
+    public int getSortOn()
+    {
+        return sortOn;
+    }
+
+    public void setSortOn(int sortOn)
+    {
+        this.sortOn = sortOn;
+    }
+
+    public ArrayList<String> getGroceryList()
+    {
+        return groceryList;
+    }
+
+    public void setGroceryList(ArrayList<String> groceryList)
+    {
+        this.groceryList = groceryList;
+    }
 }

@@ -36,6 +36,34 @@ public class AddEditRecipe extends StandardActivity
         setContentView(R.layout.activity_add_edit_recipe);
     }
 
+    /**
+     * Check changes before leaving
+     */
+    @Override
+    public void goHome()
+    {
+        if (hasChanged()) //display "are you sure"
+        {
+            new AlertDialog.Builder(findViewById(R.id.addEditRecipeDirectionsText).getContext())
+                    .setTitle(R.string.exit_prompt)
+                    .setMessage(R.string.cont_wo_saving)
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener()
+                    {
+                        public void onClick(DialogInterface dialog, int which)
+                        {
+                            AddEditRecipe.super.goHome();
+                        }
+                    })
+
+                    // A null listener allows the button to dismiss the dialog and take no further action.
+                    .setNegativeButton(android.R.string.no, null)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        } else //go back
+        {
+            AddEditRecipe.super.goHome();
+        }
+    }
 
     /**
      * If user hits back arrow
@@ -43,33 +71,11 @@ public class AddEditRecipe extends StandardActivity
     @Override
     public void onBackPressed()
     {
-        boolean changed = false;
-        TextView view = findViewById(R.id.addEditRecipeNameText);
-        String name = view.getText().toString();
-        view = findViewById(R.id.addEditRecipeIngredientsText);
-        String ingedients = view.getText().toString();
-        view = findViewById(R.id.addEditRecipeDirectionsText);
-        String directions = view.getText().toString();
-        view = findViewById(R.id.addEditRecipeServingsText);
-        String servings = view.getText().toString();
-        if (index != -1) //if recipe was edited and user didn't hit save
+        if (hasChanged()) //display "are you sure"
         {
-            Recipe recipe = Recipes.getInstance().getList().get(index);
-            if (!recipe.getIngredients().equals(ingedients) || !recipe.getDirections().equals(directions) || !recipe.getTitle().equals(name) || !Integer.toString(recipe.getServings()).equals(servings))
-            {
-                changed = true;
-            }
-        } else // recipe was added and user didn't hit save
-        {
-            if (!ingedients.equals("") || !directions.equals("") || !name.equals(""))
-                changed = true;
-        }
-
-        if (changed) //display "are you sure"
-        {
-            new AlertDialog.Builder(view.getContext())
-                    .setTitle("Exit")
-                    .setMessage("Are you sure you want to continue without saving?")
+            new AlertDialog.Builder(findViewById(R.id.addEditRecipeDirectionsText).getContext())
+                    .setTitle(R.string.exit_prompt)
+                    .setMessage(R.string.cont_wo_saving)
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener()
                     {
                         public void onClick(DialogInterface dialog, int which)
@@ -138,11 +144,11 @@ public class AddEditRecipe extends StandardActivity
             recipe = recipes.getList().get(index);
         }
         TextView view = findViewById(R.id.addEditRecipeNameText);
-        recipe.setTitle(view.getText().toString());
+        recipe.setTitle(RecipeParser.toTitleCase(view.getText().toString()));
         view = findViewById(R.id.addEditRecipeIngredientsText);
-        recipe.setIngredients(view.getText().toString());
+        recipe.setIngredients(view.getText().toString().replace("\n\n", "\n"));
         view = findViewById(R.id.addEditRecipeDirectionsText);
-        recipe.setDirections(view.getText().toString());
+        recipe.setDirections(view.getText().toString().replace("\n\n", "\n"));
         view = findViewById(R.id.addEditRecipeServingsText);
         try
         {
@@ -173,8 +179,8 @@ public class AddEditRecipe extends StandardActivity
         } else //delete on edit
         {
             new AlertDialog.Builder(view.getContext())
-                    .setTitle("Delete")
-                    .setMessage("Are you sure you want to delete?")
+                    .setTitle(R.string.delete_tc)
+                    .setMessage(R.string.delete_prompt)
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener()
                     {
                         public void onClick(DialogInterface dialog, int which)
@@ -264,11 +270,37 @@ public class AddEditRecipe extends StandardActivity
                 targetView.setText(Integer.toString(recipeParser.getServings()));
                 ToggleButton metricSwitch = findViewById(R.id.addEditRecipeUnitsSwitch);
                 metricSwitch.setChecked(recipeParser.isMetric());
-                Toast toast = Toast.makeText(getApplicationContext(), R.string.capturedPrompt, Toast.LENGTH_LONG);
+                Toast toast = Toast.makeText(getApplicationContext(), R.string.captured_prompt, Toast.LENGTH_LONG);
                 toast.setMargin(TOAST_MARGIN, TOAST_MARGIN);
                 toast.show();
             }
         }
+    }
+
+    private boolean hasChanged()
+    {
+        boolean changed = false;
+        TextView view = findViewById(R.id.addEditRecipeNameText);
+        String name = view.getText().toString();
+        view = findViewById(R.id.addEditRecipeIngredientsText);
+        String ingredients = view.getText().toString();
+        view = findViewById(R.id.addEditRecipeDirectionsText);
+        String directions = view.getText().toString();
+        view = findViewById(R.id.addEditRecipeServingsText);
+        String servings = view.getText().toString();
+        if (index != -1) //if recipe was edited and user didn't hit save
+        {
+            Recipe recipe = Recipes.getInstance().getList().get(index);
+            if (!recipe.getIngredients().equals(ingredients) || !recipe.getDirections().equals(directions) || !recipe.getTitle().equals(name) || !Integer.toString(recipe.getServings()).equals(servings))
+            {
+                changed = true;
+            }
+        } else // recipe was added and user didn't hit save
+        {
+            if (!ingredients.equals("") || !directions.equals("") || !name.equals(""))
+                changed = true;
+        }
+        return changed;
     }
 
 }

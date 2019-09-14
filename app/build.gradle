@@ -1,27 +1,43 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        release {
+            storeFile file('Z:\\important-docs\\keyStore\\androidAppKeyStore.jks')
+            storePassword 'thx1138'
+            keyAlias = 'apkKey'
+            keyPassword 'thx1138'
+        }
+    }
     compileSdkVersion 29
     buildToolsVersion "29.0.0"
     defaultConfig {
         applicationId "com.stevedegroof.recipe_wizard"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 10
-        versionName "1.2.2"
+        versionCode 11
+        versionName "1.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        resValue "string", "app_name", "Recipe Wizard"
+        resValue "string", "auth_name", "com.stevedegroof.recipe_wizard.provider"
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+        debug {
+            applicationIdSuffix = ".qa"
+            testCoverageEnabled = "true"
+            resValue "string", "app_name", "Recipe QA"
+            resValue "string", "auth_name", "com.stevedegroof.recipe_wizard.qa.provider"
+        }
     }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'com.google.android.material:material:1.0.0'
     testImplementation 'junit:junit:4.12'
