@@ -170,7 +170,7 @@ public class RecipeParser
                     line = line.substring(line.indexOf(" ")).trim();
                 }
                 directions += line;
-                if (directions.endsWith(".") || isVerbatim)
+                if (directions.trim().endsWith(".") || isVerbatim)
                 {
                     directions += "\n";
                 } else if (directions.endsWith("-"))

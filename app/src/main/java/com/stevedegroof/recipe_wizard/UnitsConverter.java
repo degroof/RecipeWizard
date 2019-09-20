@@ -74,7 +74,8 @@ public class UnitsConverter
             "milk", "broth"};
     private static final String PREP_WORDS[] = {"chopped", "diced", "quartered", "mashed", "shredded",
             "minced", "cubed", "cooked", "uncooked", "drained", "undrained", "chilled", "cold",
-            "halved", "seeded", "peeled", "divided"};
+            "halved", "seeded", "peeled", "divided", "beaten", "rinsed", "blanched", "juiced",
+            "dry", "flaked", "melted"};
 
     private double value = 0; //numeric part of the quantity
     private int units = NONE; //units part of the quantity
