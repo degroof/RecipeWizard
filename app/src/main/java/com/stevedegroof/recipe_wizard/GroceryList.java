@@ -106,11 +106,16 @@ public class GroceryList extends StandardActivity
     protected void onResume()
     {
         super.onResume();
-        String ingr = "";
         ArrayList<String> ingredients = Recipes.getInstance().getGroceryList();
         ingredients = new UnitsConverter().consolidateGroceryList(ingredients);
         Collections.sort(ingredients, String.CASE_INSENSITIVE_ORDER);
         Recipes.getInstance().setGroceryList(ingredients);
+        fillList(ingredients);
+    }
+
+    private void fillList(ArrayList<String> ingredients)
+    {
+        String ingr = "";
         for (String ingredient : ingredients)
         {
             if (!ingredient.trim().isEmpty()) ingr += ingredient + "\n";
