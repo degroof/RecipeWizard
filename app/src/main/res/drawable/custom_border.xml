@@ -6,6 +6,7 @@
         android:right="3dp"
         android:top="3dp"
         android:bottom="3dp" />
+    <solid android:color="@color/colorTextBackground" />
     <stroke
         android:width="2dp"
         android:color="@color/colorPrimary" />

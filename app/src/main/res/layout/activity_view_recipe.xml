@@ -73,7 +73,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
-                android:contentDescription="@string/delete"
+                android:contentDescription="@string/add_ingredients_to_List"
                 android:onClick="addIngredientsToList"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/viewRecipeDeleteButton"
@@ -214,7 +214,6 @@
                     android:layout_marginStart="8dp"
                     android:ems="10"
                     android:gravity="start|top"
-                    android:inputType="textMultiLine|textNoSuggestions"
                     android:minLines="1" />
 
                 <TextView
@@ -232,7 +231,6 @@
                     android:layout_marginStart="8dp"
                     android:ems="10"
                     android:gravity="start|top"
-                    android:inputType="textMultiLine|textNoSuggestions"
                     android:minLines="1" />
 
             </LinearLayout>

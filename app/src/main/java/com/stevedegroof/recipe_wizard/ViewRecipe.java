@@ -4,6 +4,7 @@ package com.stevedegroof.recipe_wizard;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -332,11 +333,11 @@ public class ViewRecipe extends StandardActivity
         {
             groceryListArray.add(ingredient);
         }
-        groceryListArray = new UnitsConverter().convertIngredientsToGroceryList(groceryListArray);
-        Recipes.getInstance().getGroceryList().addAll(groceryListArray);
+        ArrayList<GroceryListItem> items = new UnitsConverter().convertIngredientsToGroceryList(groceryListArray);
+        Recipes.getInstance().getGroceryList().addAll(items);
         Recipes.getInstance().save(getApplicationContext());
-        Toast toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.added_to_grocery_list), Toast.LENGTH_SHORT);
-        toast.setMargin(TOAST_MARGIN, TOAST_MARGIN);
+        Toast toast = Toast.makeText(view.getContext(), getResources().getString(R.string.added_to_grocery_list), Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
     }
 

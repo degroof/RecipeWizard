@@ -90,6 +90,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+
             <EditText
                 android:id="@+id/captureText"
                 android:layout_width="match_parent"
@@ -102,7 +103,8 @@
                 android:gravity="start|top"
                 android:hint="@string/capture_hint"
                 android:inputType="textMultiLine"
-                android:minLines="20" />
+                android:minLines="20"
+                android:singleLine="false" />
         </LinearLayout>
 
     </ScrollView>

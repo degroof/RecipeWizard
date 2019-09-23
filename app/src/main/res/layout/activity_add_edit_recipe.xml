@@ -163,7 +163,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="32dp"
-                        android:text="ToggleButton"
+                        android:text=""
                         android:textOff="@string/imperial"
                         android:textOn="@string/metric"
                         app:layout_constraintBottom_toBottomOf="parent"

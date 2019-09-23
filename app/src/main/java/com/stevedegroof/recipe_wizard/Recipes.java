@@ -8,7 +8,6 @@ import com.google.gson.reflect.TypeToken;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -30,8 +29,12 @@ public class Recipes
     private int sortOn = NAME;
 
     //grocery list
-    private ArrayList<String> groceryList = new ArrayList<String>();
-    private Type groceriesType = new TypeToken<ArrayList<String>>()
+    private ArrayList<GroceryListItem> groceryList = new ArrayList<GroceryListItem>();
+    private Type groceriesType = new TypeToken<ArrayList<GroceryListItem>>()
+    {
+    }.getType();
+
+    private Type oldGroceriesType = new TypeToken<ArrayList<String>>()
     {
     }.getType();
 
@@ -78,13 +81,13 @@ public class Recipes
             }
             json = sb.toString();
             bufferedReader.close();
-        } catch (IOException e)
+            if (!json.isEmpty())
+            {
+                list = gson.fromJson(json, recipesType);
+                sort();
+            }
+        } catch (Exception e)
         {
-        }
-        if (!json.isEmpty())
-        {
-            list = gson.fromJson(json, recipesType);
-            sort();
         }
         json = "";
         try
@@ -100,13 +103,22 @@ public class Recipes
             }
             json = sb.toString();
             bufferedReader.close();
-        } catch (IOException e)
+            if (!json.isEmpty())
+            {
+                groceryList = gson.fromJson(json, groceriesType);
+            }
+        } catch (Exception e)
         {
-        }
-        if (!json.isEmpty())
-        {
-            groceryList = gson.fromJson(json, groceriesType);
-            sort();
+            try
+            {
+                ArrayList<String> ingredients = gson.fromJson(json, oldGroceriesType);
+                ArrayList<GroceryListItem> items = new ArrayList<GroceryListItem>();
+                for (String ingredient : ingredients)
+                    items.add(new GroceryListItem(ingredient, false));
+                groceryList = items;
+            } catch (Exception ex)
+            {
+            }
         }
     }
 
@@ -170,12 +182,12 @@ public class Recipes
         this.sortOn = sortOn;
     }
 
-    public ArrayList<String> getGroceryList()
+    public ArrayList<GroceryListItem> getGroceryList()
     {
         return groceryList;
     }
 
-    public void setGroceryList(ArrayList<String> groceryList)
+    public void setGroceryList(ArrayList<GroceryListItem> groceryList)
     {
         this.groceryList = groceryList;
     }

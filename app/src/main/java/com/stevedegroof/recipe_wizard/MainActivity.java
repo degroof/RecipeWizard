@@ -109,6 +109,7 @@ public class MainActivity extends StandardActivity
             item.setVisible(false);
         return result;
     }
+
     /**
      * Set the match score for the recipe.
      *
@@ -299,7 +300,6 @@ public class MainActivity extends StandardActivity
         } catch (Exception e)
         {
             Toast toast = Toast.makeText(getApplicationContext(), "Unable to export. " + e.getMessage(), Toast.LENGTH_LONG);
-            toast.setMargin(TOAST_MARGIN, TOAST_MARGIN);
             toast.show();
         }
     }
@@ -329,7 +329,6 @@ public class MainActivity extends StandardActivity
         } catch (Exception e)
         {
             Toast toast = Toast.makeText(getApplicationContext(), "Unable to import. " + e.getMessage(), Toast.LENGTH_LONG);
-            toast.setMargin(TOAST_MARGIN, TOAST_MARGIN);
             toast.show();
         }
         String recipeText = "";
@@ -378,7 +377,7 @@ public class MainActivity extends StandardActivity
     {
         Recipe recipe = new Recipe();
         RecipeParser parser = new RecipeParser();
-        parser.setRawText(recipeText,true); //imported text is assumed to be formatted correctly
+        parser.setRawText(recipeText, true); //imported text is assumed to be formatted correctly
         recipe.setTitle(parser.getTitle());
         recipe.setServings(parser.getServings());
         recipe.setMetric(parser.isMetric());
@@ -507,7 +506,6 @@ public class MainActivity extends StandardActivity
         } catch (Exception e)
         {
             Toast toast = Toast.makeText(getApplicationContext(), "Unable to share recipe book. " + e.getMessage(), Toast.LENGTH_LONG);
-            toast.setMargin(TOAST_MARGIN, TOAST_MARGIN);
             toast.show();
         }
     }

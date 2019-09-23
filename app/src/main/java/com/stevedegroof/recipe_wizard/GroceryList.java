@@ -6,12 +6,13 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * screen to display / edit grocery list
@@ -19,13 +20,48 @@ import java.util.Collections;
 public class GroceryList extends StandardActivity
 {
 
+    GroceryListViewAdapter adapter;
+    ArrayList<GroceryListItem> items = new ArrayList<GroceryListItem>();
+
+    ItemTouchHelper.Callback itemMoveCallback;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_grocery_list);
+        // set up the RecyclerView
+        RecyclerView recyclerView = findViewById(R.id.groceryListView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new GroceryListViewAdapter(this, items);
+        recyclerView.setAdapter(adapter);
+        //set up drag-and-drop
+        itemMoveCallback =
+                new ItemMoveCallback(adapter);
+        ItemTouchHelper touchHelper = new ItemTouchHelper(itemMoveCallback);
+        touchHelper.attachToRecyclerView(recyclerView);
 
     }
+
+    /**
+     * consolidate any edited items
+     *
+     * @param view
+     */
+    public void recalc(View view)
+    {
+        items = adapter.getGroceryListItems();
+        items = new UnitsConverter().consolidateGroceryList(items);
+        if (items.isEmpty() || !items.get(0).getText().isEmpty())
+        {
+            items.add(0, new GroceryListItem("", false));
+        }
+        adapter.setGroceryListItems(items);
+        Recipes.getInstance().setGroceryList(items);
+        Recipes.getInstance().save(getApplicationContext());
+        adapter.notifyDataSetChanged();
+    }
+
 
     /**
      * Ask user to confirm delete
@@ -60,10 +96,10 @@ public class GroceryList extends StandardActivity
      */
     private void deleteList(View v)
     {
-        EditText list = findViewById(R.id.groceryList);
-        list.setText("");
         Recipes.getInstance().getGroceryList().clear();
         Recipes.getInstance().save(getApplicationContext());
+        recalc(v);
+        adapter.notifyDataSetChanged();
     }
 
 
@@ -77,8 +113,11 @@ public class GroceryList extends StandardActivity
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.grocery_list));
-        EditText list = findViewById(R.id.groceryList);
-        intent.putExtra(Intent.EXTRA_TEXT, list.getText().toString());
+        updateGroceryList();
+        ArrayList<GroceryListItem> glItems = Recipes.getInstance().getGroceryList();
+        String ingredientsText = "";
+        for (GroceryListItem item : glItems) ingredientsText += item.getText() + "\n";
+        intent.putExtra(Intent.EXTRA_TEXT, ingredientsText);
 
         startActivity(Intent.createChooser(intent, getResources().getString(R.string.share_grocery_list)));
     }
@@ -106,34 +145,29 @@ public class GroceryList extends StandardActivity
     protected void onResume()
     {
         super.onResume();
-        ArrayList<String> ingredients = Recipes.getInstance().getGroceryList();
-        ingredients = new UnitsConverter().consolidateGroceryList(ingredients);
-        Collections.sort(ingredients, String.CASE_INSENSITIVE_ORDER);
-        Recipes.getInstance().setGroceryList(ingredients);
-        fillList(ingredients);
+        items = Recipes.getInstance().getGroceryList();
+        items = new UnitsConverter().consolidateGroceryList(items);
+        Recipes.getInstance().setGroceryList(items);
+        if (items.isEmpty() || !items.get(0).getText().isEmpty())
+        {
+            items.add(0, new GroceryListItem("", false));
+        }
+        adapter.setGroceryListItems(items);
+        adapter.notifyDataSetChanged();
     }
 
-    private void fillList(ArrayList<String> ingredients)
-    {
-        String ingr = "";
-        for (String ingredient : ingredients)
-        {
-            if (!ingredient.trim().isEmpty()) ingr += ingredient + "\n";
-        }
-        EditText list = findViewById(R.id.groceryList);
-        list.setText(ingr);
-    }
 
     /**
      * Update grocery list to reflect screen text
      */
     private void updateGroceryList()
     {
-        EditText list = findViewById(R.id.groceryList);
-        String ingredients = list.getText().toString();
-        String ingrArray[] = ingredients.split("\n");
-        ArrayList<String> ingrList = new ArrayList<>();
-        for (String ingr : ingrArray) ingrList.add(ingr);
+        ArrayList<GroceryListItem> ingrList = new ArrayList<>();
+        for (int i = 0; i < adapter.getItemCount(); i++)
+        {
+            if (!adapter.getItem(i).getText().isEmpty())
+                ingrList.add(adapter.getItem(i));
+        }
         Recipes.getInstance().setGroceryList(ingrList);
         Recipes.getInstance().save(getApplicationContext());
     }
@@ -156,5 +190,10 @@ public class GroceryList extends StandardActivity
     {
         updateGroceryList();
         super.goHome();
+    }
+
+    public ItemMoveCallback getItemMoveCallback()
+    {
+        return (ItemMoveCallback) itemMoveCallback;
     }
 }

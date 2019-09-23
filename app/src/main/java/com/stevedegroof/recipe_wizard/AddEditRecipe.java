@@ -271,7 +271,6 @@ public class AddEditRecipe extends StandardActivity
                 ToggleButton metricSwitch = findViewById(R.id.addEditRecipeUnitsSwitch);
                 metricSwitch.setChecked(recipeParser.isMetric());
                 Toast toast = Toast.makeText(getApplicationContext(), R.string.captured_prompt, Toast.LENGTH_LONG);
-                toast.setMargin(TOAST_MARGIN, TOAST_MARGIN);
                 toast.show();
             }
         }

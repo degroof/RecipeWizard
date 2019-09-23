@@ -100,7 +100,6 @@ public class ImageCapture extends CommonActivity
             } catch (Exception e)
             {
                 Toast toast = Toast.makeText(getApplicationContext(), "Unable to read image. " + e.getMessage(), Toast.LENGTH_LONG);
-                toast.setMargin(TOAST_MARGIN, TOAST_MARGIN);
                 toast.show();
             }
 

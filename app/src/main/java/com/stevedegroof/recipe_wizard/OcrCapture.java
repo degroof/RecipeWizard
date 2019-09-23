@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.SparseArray;
+import android.view.Gravity;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -44,12 +45,11 @@ public class OcrCapture extends CommonActivity
         if (!textRecognizer.isOperational())
         {
             Toast toast = Toast.makeText(getApplicationContext(), "Unable to get camera.", Toast.LENGTH_LONG);
-            toast.setMargin(TOAST_MARGIN, TOAST_MARGIN);
             toast.show();
         } else
         {
             Toast toast = Toast.makeText(getApplicationContext(), R.string.ocr_prompt, Toast.LENGTH_LONG);
-            toast.setMargin(TOAST_MARGIN, TOAST_MARGIN);
+            toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
             cameraSource = new CameraSource.Builder(getApplicationContext(), textRecognizer)
                     .setFacing(CameraSource.CAMERA_FACING_BACK)
@@ -76,7 +76,6 @@ public class OcrCapture extends CommonActivity
                     } catch (IOException e)
                     {
                         Toast toast = Toast.makeText(getApplicationContext(), "Unable to capture. " + e.getMessage(), Toast.LENGTH_LONG);
-                        toast.setMargin(TOAST_MARGIN, TOAST_MARGIN);
                         toast.show();
                     }
                 }
@@ -171,7 +170,6 @@ public class OcrCapture extends CommonActivity
                     } catch (IOException e)
                     {
                         Toast toast = Toast.makeText(getApplicationContext(), "Unable to capture. " + e.getMessage(), Toast.LENGTH_LONG);
-                        toast.setMargin(TOAST_MARGIN, TOAST_MARGIN);
                         toast.show();
                     }
                 }

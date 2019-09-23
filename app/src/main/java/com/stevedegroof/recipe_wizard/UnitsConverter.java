@@ -793,7 +793,6 @@ public class UnitsConverter
     }
 
 
-
     /**
      * Convert ingredient based on servings and measurement system
      *
@@ -1297,14 +1296,14 @@ public class UnitsConverter
      * @param ingredients
      * @return
      */
-    ArrayList<String> convertIngredientsToGroceryList(ArrayList<String> ingredients)
+    ArrayList<GroceryListItem> convertIngredientsToGroceryList(ArrayList<String> ingredients)
     {
-        ArrayList<String> groceryList = new ArrayList<String>();
+        ArrayList<GroceryListItem> groceryList = new ArrayList<GroceryListItem>();
         for (String ingredient : ingredients)
         {
             String name = stripPrep(setQuantity(ingredient));
             String quantity = toString(true);
-            groceryList.add(quantity.trim().isEmpty() ? name.trim() : name.trim() + " (" + quantity + ")");
+            groceryList.add(new GroceryListItem(quantity.trim().isEmpty() ? name.trim() : name.trim() + " (" + quantity + ")", false));
         }
         return groceryList;
     }
@@ -1312,15 +1311,18 @@ public class UnitsConverter
     /**
      * Match up similar ingredients and add their quantities
      *
-     * @param ingredients
+     * @param items
      * @return
      */
-    ArrayList<String> consolidateGroceryList(ArrayList<String> ingredients)
+    ArrayList<GroceryListItem> consolidateGroceryList(ArrayList<GroceryListItem> items)
     {
-        ArrayList<String> result = new ArrayList<String>();
+        ArrayList<GroceryListItem> result = new ArrayList<GroceryListItem>();
 
-        for (String thisIngredient : ingredients)
+        for (GroceryListItem thisItem : items)
         {
+            value = 1d;
+            units = NONE;
+            String thisIngredient = thisItem.getText();
             int thisSystem = IMPERIAL;
             String thisName = setQuantityFromGroceryListItem(thisIngredient);
             thisName = stripPrep(thisName);
@@ -1332,8 +1334,11 @@ public class UnitsConverter
                 thisSystem = METRIC;
             }
             boolean found = false;
-            for (String otherIngredient : result)
+            for (GroceryListItem otherItem : result)
             {
+                value = 1d;
+                units = NONE;
+                String otherIngredient = otherItem.getText();
                 int otherSystem = IMPERIAL;
                 String otherName = setQuantityFromGroceryListItem(otherIngredient);
                 otherName = stripPrep(otherName);
@@ -1344,11 +1349,11 @@ public class UnitsConverter
                 int otherUnits = units;
                 boolean otherMass = isMass(otherIngredient);
                 double otherValue = value;
-                if (thisSystem == otherSystem && thisMass == otherMass && thisName.trim().equalsIgnoreCase(otherName.trim()))
+                if (thisSystem == otherSystem && thisMass == otherMass && thisName.replaceAll("[^A-Za-z0-9]+", " ").trim().equalsIgnoreCase(otherName.replaceAll("[^A-Za-z0-9]+", " ").trim()))
                 {
                     String newIngredient = addValues(thisValue, thisUnits, otherValue, otherUnits, thisName, thisSystem, thisMass);
-                    result.remove(otherIngredient);
-                    result.add(newIngredient);
+                    result.remove(otherItem);
+                    result.add(new GroceryListItem(newIngredient, otherItem.isChecked()));
                     found = true;
                     break;
                 }
@@ -1356,7 +1361,7 @@ public class UnitsConverter
             if (!found && !thisIngredient.trim().endsWith(":"))
             {
                 thisIngredient = stripPrep(thisIngredient);
-                result.add(thisIngredient);
+                result.add(thisItem);
             }
         }
 
@@ -1417,10 +1422,9 @@ public class UnitsConverter
         String newIngredient = df.format(value) + " " + getUnitsString() + " " + name;
         ArrayList<String> ingredients = new ArrayList<String>();
         ingredients.add(convert(newIngredient, 1, 1, system, system, true));
-        ingredients = convertIngredientsToGroceryList(ingredients);
-        return ingredients.get(0);
+        ArrayList<GroceryListItem> items = convertIngredientsToGroceryList(ingredients);
+        return items.get(0).getText();
     }
-
 
 
 }
