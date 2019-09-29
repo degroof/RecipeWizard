@@ -98,6 +98,7 @@ public class GroceryListViewAdapter extends RecyclerView.Adapter<GroceryListView
 
             editText = itemView.findViewById(R.id.editTextItem);
             checkBox = itemView.findViewById(R.id.checkBox);
+
             editText.addTextChangedListener(
                     new TextWatcher()
                     {
@@ -112,12 +113,36 @@ public class GroceryListViewAdapter extends RecyclerView.Adapter<GroceryListView
                         public void onTextChanged(CharSequence s, int start,
                                                   int before, int count)
                         {
-                            if (s.toString().contains("\n")) //user hit enter; create new item
+                            if (s.toString().contains("\n")) //text contains newline; create new item
                             {
-                                groceryListItems.get(getAdapterPosition()).setText(s.toString().replaceAll("\n", ""));
-                                notifyItemChanged(getAdapterPosition());
-                                groceryListItems.add(getAdapterPosition() + 1, new GroceryListItem("", false));
-                                notifyItemInserted(getAdapterPosition() + 1);
+                                if (count > 1) //probably a paste
+                                {
+                                    int offset = 0;
+                                    if (start > 0)
+                                    {
+                                        groceryListItems.get(getAdapterPosition()).setText(s.toString().substring(0, start) + s.toString().substring(start + count));
+                                        offset = 1;
+                                        groceryListItems.add(getAdapterPosition() + 1, new GroceryListItem("", false));
+                                    }
+                                    String pastedText = s.toString();
+                                    pastedText = pastedText.substring(start, start + count);
+                                    String items[] = pastedText.split("\n");
+                                    groceryListItems.get(getAdapterPosition() + offset).setText(items[0]);
+                                    if (items.length > 1) //more than one item
+                                    {
+                                        for (int i = 1; i < items.length; i++)
+                                        {
+                                            groceryListItems.add(getAdapterPosition() + i + offset, new GroceryListItem(items[i], false));
+                                        }
+                                        notifyDataSetChanged();
+                                    }
+                                } else //user hit enter on existing item
+                                {
+                                    groceryListItems.get(getAdapterPosition()).setText(s.toString().replaceAll("\n", ""));
+                                    notifyItemChanged(getAdapterPosition());
+                                    groceryListItems.add(getAdapterPosition() + 1, new GroceryListItem("", false));
+                                    notifyItemInserted(getAdapterPosition() + 1);
+                                }
                             } else //update list with text change
                             {
                                 groceryListItems.get(getAdapterPosition()).setText(s.toString());
@@ -249,6 +274,8 @@ public class GroceryListViewAdapter extends RecyclerView.Adapter<GroceryListView
         super.onViewAttachedToWindow(holder);
         if (holder.editText.getText().toString().isEmpty())
             holder.editText.requestFocus();
+        holder.editText.setEnabled(false);
+        holder.editText.setEnabled(true);
     }
 
     /**

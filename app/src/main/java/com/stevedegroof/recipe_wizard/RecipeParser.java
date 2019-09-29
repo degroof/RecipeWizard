@@ -88,7 +88,7 @@ public class RecipeParser
         {
             if (!lines[i].trim().isEmpty() && !isSpecialLine(lines[i]))
             {
-                if (!ingredients.isEmpty() && (isVerbatim || lines[i].matches(UnitsConverter.VALUE_PARSE+".*")))
+                if (!ingredients.isEmpty())
                 {
                     ingredients += "\n";
                 }
@@ -170,7 +170,7 @@ public class RecipeParser
                     line = line.substring(line.indexOf(" ")).trim();
                 }
                 directions += line;
-                if (directions.trim().endsWith(".") || isVerbatim)
+                if (directions.trim().endsWith(".") || directions.trim().endsWith(":") || isVerbatim)
                 {
                     directions += "\n";
                 } else if (directions.endsWith("-"))
