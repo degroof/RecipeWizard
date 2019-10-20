@@ -734,17 +734,23 @@ public class UnitsConverter
         value = 0d;
         Pattern pattern = Pattern.compile(VALUE_PARSE);
         String valueString = "";
-        String remainingIngredient = ingredient.replaceAll("\\s|\\t|\\xA0", " ");
+        String remainingIngredient = ingredient.replaceAll("\\s|\\t|\\xA0", " ").trim();
         Matcher matcher = pattern.matcher(remainingIngredient);
         if (matcher.find())
         {
             valueString = matcher.group(0);
             remainingIngredient = remainingIngredient.substring(valueString.length());
+            remainingIngredient = remainingIngredient.replaceAll("\\s|\\t|\\xA0", " ");
             String unitWord = setUnits(remainingIngredient);
             if (!unitWord.isEmpty())
             {
-                remainingIngredient = remainingIngredient.replaceAll("\\s|\\t|\\xA0", " ");
-                remainingIngredient = remainingIngredient.substring(unitWord.length());
+                if (unitWord.length() < remainingIngredient.length())
+                {
+                    remainingIngredient = remainingIngredient.substring(unitWord.length());
+                } else
+                {
+                    remainingIngredient = "";
+                }
             }
         } else
         {
@@ -1349,7 +1355,7 @@ public class UnitsConverter
                 int otherUnits = units;
                 boolean otherMass = isMass(otherIngredient);
                 double otherValue = value;
-                if (thisSystem == otherSystem && thisMass == otherMass && thisName.replaceAll("[^A-Za-z0-9]+", " ").trim().equalsIgnoreCase(otherName.replaceAll("[^A-Za-z0-9]+", " ").trim()))
+                if (thisSystem == otherSystem && thisMass == otherMass && thisName.replaceAll("[^A-Za-z0-9]+", " ").trim().equalsIgnoreCase(otherName.replaceAll("[^A-Za-z0-9]+", " ").trim()) && !otherName.trim().isEmpty())
                 {
                     String newIngredient = addValues(thisValue, thisUnits, otherValue, otherUnits, thisName, thisSystem, thisMass);
                     result.remove(otherItem);
