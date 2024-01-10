@@ -470,20 +470,20 @@ public class UnitsConverter
     private String roundLb(double lb)
     {
         double rounded = 0;
-        if (lb < 4)
-        {
+        if (lb < (15d / 16d)) {
+            double oz = lb * LB_TO_OZ;
+            return new DecimalFormat("#").format(Math.round(oz)) + " oz";
+        } else if (lb < 4) {
             int intPart = (int) lb;
             double frac = lb - (double) intPart;
-            if (frac < .75)
-            {
-                return (intPart == 0 ? "" : new DecimalFormat("#").format(Math.floor(lb)) + (frac > 0.25 ? " 1/2" : ""));
-            } else
-            {
-                return new DecimalFormat("#").format(Math.round(lb));
+            if (frac < .75) {
+                return (intPart == 0 ? "" : new DecimalFormat("#").format(Math.floor(lb)) + (frac > 0.25 ? " 1/2" : "")) + " lb";
+            } else {
+                return new DecimalFormat("#").format(Math.round(lb)) + " lb";
             }
         } else
         {
-            return new DecimalFormat("#").format(Math.round(lb));
+            return new DecimalFormat("#").format(Math.round(lb)) + " lb";
         }
     }
 
@@ -506,7 +506,7 @@ public class UnitsConverter
             case OZ:
                 return round ? roundOz(value).trim() + " oz" : df.format(value) + " oz";
             case LB:
-                return round ? roundGeneric(value).trim() + " lb" : df.format(value) + " lb";
+                return roundLb(value);
             case FL_OZ:
                 return round ? roundOz(value).trim() + " oz" : df.format(value) + " oz";
             case TSP:
@@ -932,16 +932,17 @@ public class UnitsConverter
             units = ML;
             value = value * OZ_TO_ML;
         }
-        if (toSystem == IMPERIAL)
-        {
-            if (units == ML)
-            {
+        if (toSystem == IMPERIAL) {
+            if (units == ML) {
                 units = OZ;
                 value = value / OZ_TO_ML;
             }
-            if (units == OZ && !setBaseUnits)
-            {
+            if (units == OZ && !setBaseUnits) {
                 doBestGuessImperial();
+            }
+            if (units == GRAM) {
+                units = LB;
+                value = value / OZ_TO_G / LB_TO_OZ;
             }
         }
 

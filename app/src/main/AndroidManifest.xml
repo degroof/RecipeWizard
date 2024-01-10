@@ -10,15 +10,33 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:windowSoftInputMode="adjustResize">
-        <activity android:name=".GroceryList" />
-        <activity android:name=".DirectionsAdjustment" />
-        <activity android:name=".Help" />
-        <activity android:name=".ImageCapture" />
-        <activity android:name=".OcrCapture" />
-        <activity android:name=".CaptureText" />
-        <activity android:name=".ViewRecipe" />
-        <activity android:name=".AddEditRecipe" />
-        <activity android:name=".MainActivity">
+        <activity
+            android:exported="false"
+            android:name=".GroceryList" />
+        <activity
+            android:exported="false"
+            android:name=".DirectionsAdjustment" />
+        <activity
+            android:exported="false"
+            android:name=".Help" />
+        <activity
+            android:exported="true"
+            android:name=".ImageCapture" />
+        <activity
+            android:exported="true"
+            android:name=".OcrCapture" />
+        <activity
+            android:exported="true"
+            android:name=".CaptureText" />
+        <activity
+            android:exported="false"
+            android:name=".ViewRecipe" />
+        <activity
+            android:exported="false"
+            android:name=".AddEditRecipe" />
+        <activity
+            android:exported="true"
+            android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

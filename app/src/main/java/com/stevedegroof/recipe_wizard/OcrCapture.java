@@ -158,17 +158,13 @@ public class OcrCapture extends CommonActivity
         {
             case RequestCameraPermissionID:
             {
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                {
-                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
-                    {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                         return;
                     }
-                    try
-                    {
+                    try {
                         cameraSource.start(cameraView.getHolder());
-                    } catch (IOException e)
-                    {
+                    } catch (IOException e) {
                         Toast toast = Toast.makeText(getApplicationContext(), "Unable to capture. " + e.getMessage(), Toast.LENGTH_LONG);
                         toast.show();
                     }

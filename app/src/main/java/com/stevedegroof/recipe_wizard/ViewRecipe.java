@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -31,6 +32,7 @@ public class ViewRecipe extends StandardActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         Intent intent = getIntent();
         index = intent.getIntExtra(CommonActivity.EXTRA_RECIPE, -1);
         setContentView(R.layout.activity_view_recipe);
@@ -41,8 +43,9 @@ public class ViewRecipe extends StandardActivity
      *
      * @param recipeIndex
      */
-    private void loadRecipe(int recipeIndex)
-    {
+    private void loadRecipe(int recipeIndex) {
+        int numberOfRecipes = Recipes.getInstance().getList().size();
+        if (index >= numberOfRecipes || index < 0) goHome();
         recipe = Recipes.getInstance().getList().get(recipeIndex);
         if (servings < 0) servings = recipe.getServings();
         TextView view = findViewById(R.id.viewRecipeNameText);

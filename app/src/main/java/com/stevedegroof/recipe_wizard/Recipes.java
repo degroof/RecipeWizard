@@ -1,6 +1,7 @@
 package com.stevedegroof.recipe_wizard;
 
 import android.content.Context;
+import android.content.Intent;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -182,13 +183,41 @@ public class Recipes
         this.sortOn = sortOn;
     }
 
-    public ArrayList<GroceryListItem> getGroceryList()
-    {
+    public ArrayList<GroceryListItem> getGroceryList() {
         return groceryList;
     }
 
-    public void setGroceryList(ArrayList<GroceryListItem> groceryList)
-    {
+    public void setGroceryList(ArrayList<GroceryListItem> groceryList) {
         this.groceryList = groceryList;
+    }
+
+    /**
+     * remove duplicates
+     *
+     * @param context
+     */
+    public void dedupe(Context context) {
+        Intent intent = new Intent();
+        intent.setAction(MainActivity.ProgressReceiver.ACTION);
+        boolean found = false;
+        ArrayList<Recipe> newRecipes = new ArrayList<Recipe>();
+        int recipeNumber = 0;
+        int recipeCount = theInstance.getList().size();
+        for (Recipe recipe : theInstance.getList()) {
+            recipeNumber++;
+            intent.putExtra(MainActivity.ProgressReceiver.PROGRESS, MainActivity.ProgressReceiver.MERGE);
+            intent.putExtra(MainActivity.ProgressReceiver.VALUE, (long) recipeNumber);
+            intent.putExtra(MainActivity.ProgressReceiver.TOTAL, (long) recipeCount);
+            context.sendBroadcast(intent);
+            found = false;
+            for (int i = 0; i < newRecipes.size() && !found; i++) {
+                Recipe newRecipe = newRecipes.get(i);
+                if (!found)
+                    found = newRecipe.getTitle().replaceAll("\\s", "").equalsIgnoreCase(recipe.getTitle().replaceAll("\\s", ""))
+                            && newRecipe.toPlainText().replaceAll("\\s", "").equalsIgnoreCase(recipe.toPlainText().replaceAll("\\s", ""));
+            }
+            if (!found) newRecipes.add(recipe);
+        }
+        theInstance.list = newRecipes;
     }
 }

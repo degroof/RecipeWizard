@@ -184,7 +184,7 @@
 
     <string name="imperial">Imperial</string>
 
-    <string name="import_prompt">You can either add to your existing recipes, or replace them. Which would you prefer?</string>
+    <string name="import_prompt">You can either add to your existing recipes, replace them, or merge the two sets. Which would you prefer?</string>
     <string name="import_recipes">Import</string>
     <string name="import_title">Import</string>
 
@@ -212,6 +212,7 @@
 
 
     <string name="replace">Replace</string>
+    <string name="merge">Merge</string>
 
     <string name="save">Save</string>
 

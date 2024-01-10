@@ -1,17 +1,26 @@
 package com.stevedegroof.recipe_wizard;
 
 import android.Manifest;
+import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.content.res.AssetFileDescriptor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,29 +40,34 @@ import java.io.OutputStream;
 /**
  * Main activity of app
  */
-public class MainActivity extends StandardActivity
-{
+public class MainActivity extends StandardActivity {
     private int importMode = IMPORT_APPEND;
     private String searchString = "";
+    ProgressDialog pd;
+    Uri importUri = null;
+    boolean loadingFile = false;
+    private ProgressReceiver progressReceiver;
+    private AlertDialog progressDialog;
+    View progressDialogView;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        progressReceiver = new ProgressReceiver();
+        this.registerReceiver(progressReceiver, new IntentFilter(ProgressReceiver.ACTION));
+
+
         setContentView(R.layout.activity_main);
         SearchView searchView = (SearchView) findViewById(R.id.searchView);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener()
-        {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextSubmit(String query)
-            {
+            public boolean onQueryTextSubmit(String query) {
                 callSearch(query);
                 return true;
             }
 
             @Override
-            public boolean onQueryTextChange(String newText)
-            {
+            public boolean onQueryTextChange(String newText) {
                 callSearch(newText);
                 return true;
             }
@@ -61,14 +75,18 @@ public class MainActivity extends StandardActivity
         });
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        this.unregisterReceiver(progressReceiver);
+    }
 
     /**
      * user typed or deleted search text
      *
      * @param query
      */
-    public void callSearch(String query)
-    {
+    public void callSearch(String query) {
         searchString = query;
         fillList();
     }
@@ -309,62 +327,80 @@ public class MainActivity extends StandardActivity
      *
      * @param uri
      */
-    private void readFileContent(Uri uri)
-    {
+    private void readFileContent(Uri uri) {
+        loadingFile = true;
+        importUri = uri;
+        //pd = ProgressDialog.show(this, "Loading recipes", "Please wait...");
+        progressDialog.show();
+        new FileLoadTask().execute();
+    }
+
+    /**
+     * Load recipes
+     * Load recipes
+     */
+    private void loadRecipes() {
+        Intent intent = new Intent();
+        intent.setAction(MainActivity.ProgressReceiver.ACTION);
+        Recipes recipes = Recipes.getInstance();
+        String recipeText = "";
         String fileContents = "";
         String line = "";
-        try
-        {
-            InputStream inputStream = getContentResolver().openInputStream(uri);
-
+        long fileSize = 0;
+        try {
+            ContentResolver cr = getContentResolver();
+            AssetFileDescriptor afd = cr.openAssetFileDescriptor(importUri, "r");
+            fileSize = afd.getLength();
+            afd.close();
+            InputStream inputStream = cr.openInputStream(importUri);
             InputStreamReader isr = new InputStreamReader(inputStream);
             BufferedReader br = new BufferedReader(isr);
-
-            while (line != null)
-            {
+            while (line != null) {
                 line = br.readLine();
                 if (line != null) fileContents += line + "\n";
+                intent.putExtra(ProgressReceiver.PROGRESS, ProgressReceiver.READING);
+                intent.putExtra(ProgressReceiver.VALUE, (long) fileContents.length());
+                intent.putExtra(ProgressReceiver.TOTAL, fileSize);
+                getApplicationContext().sendBroadcast(intent);
             }
             br.close();
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             Toast toast = Toast.makeText(getApplicationContext(), "Unable to import. " + e.getMessage(), Toast.LENGTH_LONG);
             toast.show();
         }
-        String recipeText = "";
-        Recipes recipes = Recipes.getInstance();
-        if (importMode == IMPORT_OVERWRITE)
-        {
+        if (importMode == IMPORT_OVERWRITE) {
             recipes.getList().clear(); //clear out all recipes
         }
         String[] recipesText = fileContents.split("\n");
-        for (int i = 0; i < recipesText.length; i++)
-        {
+        long currentlyLoaded = 0;
+        for (int i = 0; i < recipesText.length; i++) {
             line = recipesText[i];
-            if (line.startsWith(RECIPE_BREAK_DETECT))
-            {
-                try
-                {
+            currentlyLoaded += line.length() + 1;
+            if (line.startsWith(RECIPE_BREAK_DETECT)) {
+                intent.putExtra(ProgressReceiver.PROGRESS, ProgressReceiver.LOAD);
+                intent.putExtra(ProgressReceiver.VALUE, (long) currentlyLoaded);
+                intent.putExtra(ProgressReceiver.TOTAL, fileSize);
+                getApplicationContext().sendBroadcast(intent);
+                try {
                     parseAndAddRecipe(recipes, recipeText);
-                } catch (Throwable e)
-                {
+                } catch (Throwable e) {
                 }
                 recipeText = "";
-            } else
-            {
+            } else {
                 recipeText += line + "\n";
             }
         }
-        if (recipeText != null && !recipeText.isEmpty() && !recipeText.equals("null"))
-        {
-            try
-            {
+        if (recipeText != null && !recipeText.isEmpty() && !recipeText.equals("null")) {
+            try {
                 parseAndAddRecipe(recipes, recipeText);
-            } catch (Throwable t)
-            {
+            } catch (Throwable t) {
             }
         }
-        recipes.save(getApplicationContext());
+        if (importMode == IMPORT_MERGE) {
+            recipes.dedupe(getApplicationContext()); //merge recipes
+        }
+        intent.putExtra(ProgressReceiver.PROGRESS, ProgressReceiver.DONE);
+        getApplicationContext().sendBroadcast(intent);
     }
 
     /**
@@ -400,10 +436,8 @@ public class MainActivity extends StandardActivity
         {
             case RequestFileWritePermissionID: //exporting
             {
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                {
-                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-                    {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                         return;
                     }
                     openSaveDialog();
@@ -412,10 +446,8 @@ public class MainActivity extends StandardActivity
             break;
             case RequestFileReadPermissionID: //importing
             {
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                {
-                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-                    {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                         return;
                     }
                     openImportDialog();
@@ -442,8 +474,7 @@ public class MainActivity extends StandardActivity
     /**
      * open dialog for import
      */
-    private void openImportDialog()
-    {
+    private void openImportDialog() {
         Intent intent = new Intent()
                 .setAction(Intent.ACTION_OPEN_DOCUMENT)
                 .putExtra(Intent.EXTRA_TITLE, DEFAULT_EXPORT_FILENAME)
@@ -451,30 +482,54 @@ public class MainActivity extends StandardActivity
         startActivityForResult(Intent.createChooser(intent, getResources().getString(R.string.select_file_prompt)), REQUEST_IMPORT);
     }
 
-    public void checkImportType(View view)
-    {
+    /**
+     * @param view
+     */
+    public void checkImportType(View view) {
+        AlertDialog.Builder progBuilder = new AlertDialog.Builder(view.getContext());
+        progBuilder.setCancelable(false); // if you want user to wait for some process to finish,
+        progBuilder.setView(R.layout.layout_loading_dialog);
+        progressDialog = progBuilder.create();
+        LayoutInflater inflater = this.getLayoutInflater();
+        progressDialogView = inflater.inflate(R.layout.layout_loading_dialog, null);
+        progressDialog.setView(progressDialogView);
+
         final View v = view;
-        new AlertDialog.Builder(view.getContext())
-                .setTitle(R.string.import_title)
-                .setMessage(R.string.import_prompt)
-                .setPositiveButton(R.string.add, new DialogInterface.OnClickListener()
-                {
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        importMode = IMPORT_APPEND;
-                        importRecipes(v);
-                    }
-                })
-                .setNegativeButton(R.string.replace, new DialogInterface.OnClickListener()
-                {
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        importMode = IMPORT_OVERWRITE;
-                        importRecipes(v);
-                    }
-                })
-                .setIcon(android.R.drawable.ic_dialog_info)
-                .show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+        builder.setTitle(R.string.import_title);
+        builder.setMessage(R.string.import_prompt);
+        builder.setNeutralButton(R.string.add, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                importMode = IMPORT_APPEND;
+                importRecipes(v);
+            }
+        });
+        builder.setNegativeButton(R.string.replace, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                importMode = IMPORT_OVERWRITE;
+                importRecipes(v);
+            }
+        });
+        builder.setPositiveButton(R.string.merge, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                importMode = IMPORT_MERGE;
+                importRecipes(v);
+            }
+        });
+
+        builder.setIcon(android.R.drawable.ic_dialog_info);
+        AlertDialog alert = builder.create();
+        alert.show();
+
+
+        Button btnNeutral = alert.getButton(AlertDialog.BUTTON_POSITIVE);
+        Button btnPositive = alert.getButton(AlertDialog.BUTTON_POSITIVE);
+        Button btnNegative = alert.getButton(AlertDialog.BUTTON_NEGATIVE);
+        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) btnPositive.getLayoutParams();
+        layoutParams.weight = -10;
+        btnPositive.setLayoutParams(layoutParams);
+        btnNegative.setLayoutParams(layoutParams);
+        btnNeutral.setLayoutParams(layoutParams);
     }
 
 
@@ -503,10 +558,96 @@ public class MainActivity extends StandardActivity
             emailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             emailIntent.putExtra(Intent.EXTRA_STREAM, path);
             startActivity(Intent.createChooser(emailIntent, getResources().getString(R.string.share_book)));
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             Toast toast = Toast.makeText(getApplicationContext(), "Unable to share recipe book. " + e.getMessage(), Toast.LENGTH_LONG);
             toast.show();
         }
     }
+
+
+    /**
+     * Loads import file asychronously
+     */
+    private class FileLoadTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+
+                loadRecipes();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+
+    /**
+     * receives notifications of file load progress
+     */
+    protected class ProgressReceiver extends BroadcastReceiver {
+        public static final String ACTION = "com.stevedegroof.recipe_wizard.ACTION_PROGRESS";
+        public static final String DONE = "done";
+        public static final String MERGE = "merge";
+        public static final String LOAD = "load";
+        public static final String READING = "reading";
+        public static final String PROGRESS = "progress";
+        public static final String TOTAL = "total";
+        public static final String VALUE = "value";
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String progress = intent.getStringExtra(PROGRESS);
+            if (progress != null) {
+                long value = intent.getLongExtra(VALUE, 0);
+                long total = intent.getLongExtra(TOTAL, 10L);
+                int permil = 1000;
+                if (value < total) {
+                    permil = (int) (value * 1000L / total);
+                }
+                if (progress.equals(READING)) {
+                    setProgress("Loading file", permil);
+                } else if (progress.equals(LOAD)) {
+                    setProgress("Getting recipes", permil);
+                } else if (progress.equals(MERGE)) {
+                    setProgress("Merging recipes", permil);
+                } else if (progress.equals(DONE)) {
+                    if (progressDialog != null) progressDialog.dismiss();
+                    Recipes.getInstance().save(getApplicationContext());
+                    fillList();
+                }
+            }
+        }
+    }
+
+    /**
+     * Set the file import progress
+     *
+     * @param message
+     * @param progress
+     */
+    private void setProgress(String message, int progress) {
+        TextView messageView = progressDialogView.findViewById(R.id.loadingProgressText);
+        if (messageView != null) {
+            messageView.setText(message);
+        }
+        ProgressBar progressBar = progressDialogView.findViewById(R.id.progressBar);
+        if (progressBar != null) {
+            progressBar.setMax(1000);
+            progressBar.setProgress(progress);
+        }
+    }
+
 }
