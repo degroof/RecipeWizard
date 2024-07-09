@@ -9,14 +9,15 @@ android {
             keyPassword 'thx1138'
         }
     }
-    compileSdkVersion 33
-    buildToolsVersion "32.1.0-rc1"
+    compileSdkVersion 35
+    namespace = "com.stevedegroof.recipe_wizard"
+    //buildToolsVersion "32.1.0-rc1"
     defaultConfig {
         applicationId "com.stevedegroof.recipe_wizard"
         minSdkVersion 21
-        targetSdkVersion 33
-        versionCode 19
-        versionName "1.5.2"
+        targetSdkVersion 35
+        versionCode 22
+        versionName "1.5.5"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         resValue "string", "app_name", "Recipe Wizard"
         resValue "string", "auth_name", "com.stevedegroof.recipe_wizard.provider"
@@ -46,4 +47,10 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'com.google.android.gms:play-services-vision:20.1.3'
     implementation 'androidx.recyclerview:recyclerview-selection:1.1.0'
+}
+
+task testClasses {
+    doLast {
+        println 'This is a dummy testClasses task'
+    }
 }

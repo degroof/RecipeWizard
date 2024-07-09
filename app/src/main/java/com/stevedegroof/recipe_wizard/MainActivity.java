@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -27,6 +28,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import java.io.BufferedReader;
@@ -41,6 +43,7 @@ import java.io.OutputStream;
  * Main activity of app
  */
 public class MainActivity extends StandardActivity {
+
     private int importMode = IMPORT_APPEND;
     private String searchString = "";
     ProgressDialog pd;
@@ -52,10 +55,13 @@ public class MainActivity extends StandardActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        progressReceiver = new ProgressReceiver();
-        this.registerReceiver(progressReceiver, new IntentFilter(ProgressReceiver.ACTION));
 
+        super.onCreate(savedInstanceState);
+
+
+        progressReceiver = new ProgressReceiver();
+        IntentFilter filter = new IntentFilter(ProgressReceiver.ACTION);
+        ContextCompat.registerReceiver(this, progressReceiver, filter, ContextCompat.RECEIVER_EXPORTED);
 
         setContentView(R.layout.activity_main);
         SearchView searchView = (SearchView) findViewById(R.id.searchView);
@@ -436,7 +442,9 @@ public class MainActivity extends StandardActivity {
         {
             case RequestFileWritePermissionID: //exporting
             {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    openSaveDialog();
+                } else if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                         return;
                     }
@@ -446,7 +454,9 @@ public class MainActivity extends StandardActivity {
             break;
             case RequestFileReadPermissionID: //importing
             {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    openImportDialog();
+                } else if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                         return;
                     }
