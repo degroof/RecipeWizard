@@ -15,7 +15,6 @@ buildscript {
     dependencies {
         classpath("org.greenrobot:greendao-gradle-plugin:3.3.1")
     }
-
 }
 
 allprojects {

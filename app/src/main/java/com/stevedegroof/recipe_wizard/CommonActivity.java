@@ -1,7 +1,11 @@
 package com.stevedegroof.recipe_wizard;
 
 import android.content.Intent;
-
+import android.os.Build;
+import android.os.Bundle;
+import android.util.TypedValue;
+import android.view.View;
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 /**
@@ -59,6 +63,41 @@ public class CommonActivity extends AppCompatActivity
         Intent intent = new Intent();
         setResult(RESULT_HOME, intent);
         finish();
+    }
+
+
+    protected void onCreate(Bundle savedInstanceState) {
+        //a bunch of crap to get around the edge-to-edge thing
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            EdgeToEdge.enable(this);
+        }
+        super.onCreate(savedInstanceState);
+
+    }
+
+    public void onResume() {
+        //a bunch of crap to get around the edge-to-edge thing
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            int statusBarHeight = 0;
+            int statId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+            if (statId > 0) {
+                statusBarHeight = getResources().getDimensionPixelSize(statId);
+            }
+            int navigationBarHeight = 0;
+            int navId = getResources().getIdentifier("navigation_bar_height", "dimen", "android");
+            if (navId > 0) {
+                navigationBarHeight = getResources().getDimensionPixelSize(navId);
+            }
+            View actView = findViewById(android.R.id.content);
+            TypedValue typedValue = new TypedValue();
+            TypedValue.complexToDimensionPixelSize(typedValue.data, getResources().getDisplayMetrics());
+            if (getTheme().resolveAttribute(android.R.attr.actionBarSize, typedValue, true)) {
+                int offset = TypedValue.complexToDimensionPixelSize(typedValue.data, getResources().getDisplayMetrics());
+                offset += statusBarHeight;
+                actView.setPadding(0, offset, 0, navigationBarHeight);
+            }
+        }
+        super.onResume();
     }
 
 }
