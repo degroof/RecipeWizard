@@ -12,3 +12,5 @@
 /release
 /captures
 .externalNativeBuild
+.cxx
+local.properties

@@ -1,36 +1,48 @@
 package com.stevedegroof.recipe_wizard;
 
+import android.os.Parcel;
+
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 
-/**
- * A single recipe
- */
 public class Recipe implements Comparable<Recipe>
 {
-    private String title = "";
-    private String ingredients = "";
-    private String directions = "";
-    private int servings = 4;
-    private boolean isMetric = false;
-    private ArrayList<DirectionsPhrase> excludedPhrases = new ArrayList<DirectionsPhrase>();
-    private transient double sortScore = 1d;
-    private transient int matchingIngredients = 0;
-    private transient int totalIngredients = 0;
+    private ArrayList<DirectionsPhrase> excludedPhrases = new ArrayList<>();
+    private String title;
+    private String servings;
+    private boolean isMetric;
+    private String ingredients;
+    private String directions;
 
-    /**
-     * Used for sorting
-     *
-     * @param recipe
-     * @return
-     */
-    @Override
-    public int compareTo(Recipe recipe)
+    private transient double sortScore = 1d;
+
+
+    public Recipe(String title, String servings, boolean isMetric, String ingredients, String directions)
     {
-        if (Recipes.getInstance().getSortOn() == Recipes.NAME)
-            return title.compareTo(recipe.getTitle());
-        else
-            return Double.valueOf(recipe.sortScore).compareTo(Double.valueOf(sortScore));
+        this.title = title;
+        this.servings = servings;
+        this.isMetric = isMetric;
+        this.ingredients = ingredients;
+        this.directions = directions;
     }
+
+
+    public Recipe()
+    {
+
+    }
+
+    protected Recipe(Parcel in)
+    {
+        title = in.readString();
+        servings = in.readString();
+        isMetric = in.readByte() != 0;
+        ingredients = in.readString();
+        directions = in.readString();
+
+    }
+
 
     public String getTitle()
     {
@@ -40,6 +52,31 @@ public class Recipe implements Comparable<Recipe>
     public void setTitle(String title)
     {
         this.title = title;
+    }
+
+    public String getServings()
+    {
+        return servings;
+    }
+
+    public void setServings(String servings)
+    {
+        this.servings = servings;
+    }
+
+    public void setServings(int servings)
+    {
+        this.servings = Integer.toString(servings);
+    }
+
+    public boolean isMetric()
+    {
+        return isMetric;
+    }
+
+    public void setMetric(boolean metric)
+    {
+        isMetric = metric;
     }
 
     public String getIngredients()
@@ -62,24 +99,38 @@ public class Recipe implements Comparable<Recipe>
         this.directions = directions;
     }
 
-    public int getServings()
+
+    public String toPlainText()
     {
-        return servings;
+        String textContent = getTitle() + "\n";
+        textContent += "Ingredients\n" + getIngredients();
+        textContent += "Directions\n" + getDirections();
+        if (!textContent.endsWith("\n")) textContent += "\n";
+        textContent += "Serves " + getServings() + "\n";
+        return textContent;
     }
 
-    public void setServings(int servings)
+
+    @NonNull
+    @Override
+    public String toString()
     {
-        this.servings = servings;
+        return title != null ? title : "Untitled Recipe";
     }
 
-    public boolean isMetric()
+    /**
+     * Used for sorting
+     *
+     * @param recipe
+     * @return
+     */
+    @Override
+    public int compareTo(Recipe recipe)
     {
-        return isMetric;
-    }
-
-    public void setMetric(boolean metric)
-    {
-        isMetric = metric;
+        if (Recipes.getInstance().getSortOn() == Recipes.NAME)
+            return title.compareTo(recipe.getTitle());
+        else
+            return Double.compare(recipe.sortScore, sortScore);
     }
 
 
@@ -93,21 +144,6 @@ public class Recipe implements Comparable<Recipe>
         this.excludedPhrases = excludedPhrases;
     }
 
-    /**
-     * Convert the recipe to plain text (human-readable and parsable)
-     *
-     * @return
-     */
-    public String toPlainText()
-    {
-        String textContent = getTitle() + "\n";
-        textContent += "Ingredients\n" + getIngredients();
-        textContent += "Directions\n" + getDirections();
-        if (!textContent.endsWith("\n")) textContent += "\n";
-        textContent += "Serves " + getServings() + "\n";
-        return textContent;
-    }
-
     public double getSortScore()
     {
         return sortScore;
@@ -118,23 +154,10 @@ public class Recipe implements Comparable<Recipe>
         this.sortScore = sortScore;
     }
 
-    public int getMatchingIngredients()
-    {
-        return matchingIngredients;
-    }
-
-    public void setMatchingIngredients(int matchingIngredients)
-    {
-        this.matchingIngredients = matchingIngredients;
-    }
 
     public int getTotalIngredients()
     {
-        return totalIngredients;
+        return ingredients.split("\n").length;
     }
 
-    public void setTotalIngredients(int totalIngredients)
-    {
-        this.totalIngredients = totalIngredients;
-    }
 }

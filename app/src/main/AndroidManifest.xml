@@ -1,51 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:windowSoftInputMode="adjustResize">
+        android:theme="@style/Theme.RecipeWizard">
         <activity
-            android:exported="false"
-            android:name=".GroceryList" />
-        <activity
-            android:exported="false"
-            android:name=".DirectionsAdjustment" />
-        <activity
-            android:exported="false"
-            android:name=".Help" />
-        <activity
-            android:exported="true"
-            android:name=".ImageCapture" />
-        <activity
-            android:exported="true"
-            android:name=".OcrCapture" />
-        <activity
-            android:exported="true"
-            android:name=".CaptureText" />
-        <activity
-            android:exported="false"
-            android:name=".ViewRecipe" />
-        <activity
-            android:exported="false"
-            android:name=".AddEditRecipe" />
-        <activity
-            android:exported="true"
-            android:name=".MainActivity">
+            android:name=".MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
-                <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ViewRecipeActivity"
+            android:label="View Recipe">
+        </activity>
+        <activity
+            android:name=".EditRecipeActivity"
+            android:label="Edit Recipe">
+        </activity>
+        <activity
+            android:name=".AddRecipeActivity"
+            android:label="Add Recipe">
+        </activity>
+        <activity
+            android:name=".CaptureRecipeActivity"
+            android:label="Capture Recipe">
+        </activity>
 
-        <meta-data
-            android:name="com.google.android.gms.vision.DEPENDENCIES"
-            android:value="ocr" />
+        <activity
+            android:name=".DirectionsAdjustmentActivity"
+            android:label="Adjust Directions">
+        </activity>
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -56,26 +56,8 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
+
     </application>
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
-    <uses-permission android:name="android.permission.CAMERA" />
-
-    <uses-feature
-        android:name="android.hardware.camera"
-        android:required="false" />
-    <uses-feature
-        android:name="android.hardware.camera.any"
-        android:required="false" />
-    <uses-feature
-        android:name="android.hardware.camera2"
-        android:required="false" />
-    <uses-feature
-        android:name="android.hardware.camera.autofocus"
-        android:required="false" />
-    <uses-feature
-        android:name="android.hardware.touchscreen"
-        android:required="false" />
 </manifest>
+

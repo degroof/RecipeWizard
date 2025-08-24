@@ -1,243 +1,73 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
 
+    <string name="action_home_title">Home</string>
     <string name="add">Add</string>
-    <string name="add_directions">Add directions</string>
-    <string name="add_ingredients">Add ingredients</string>
-    <string name="add_ingredients_to_List">Add ingredients to grocery list</string>
-    <string name="add_item">add item</string>
-    <string name="add_recipe">Add recipe</string>
-
-    <string name="added_to_grocery_list">Added to grocery list.</string>
-
-    <string name="camera">Camera</string>
-
-    <string name="capture_hint">Title \n(blank line or \'Ingredients\') \nIngredients \n(blank line or \'Directions\') \nDirections\nServes __</string>
-
-    <string name="captured_prompt">Clean up text before saving.</string>
-
-    <string name="cart">Grocery List</string>
-
-    <string name="cont_wo_saving">Are you sure you want to continue without saving?</string>
-
-    <string name="converted">Converted</string>
-
-    <string name="decrease">decrease servings</string>
-
+    <string name="add_recipe">Add Recipe</string>
+    <string name="app_name">Recipe Wizard</string>
+    <string name="app_title">Recipe Wizard</string>
     <string name="delete">delete</string>
+    <string name="delete_button_description">Delete Recipe</string>
     <string name="delete_prompt">Are you sure you want to delete?</string>
+    <string name="delete_recipe_description">Delete Recipe</string>
     <string name="delete_recipe_prompt">Do you really want to delete this recipe?</string>
     <string name="delete_sl_prompt">Do you really want to delete this grocery list?</string>
     <string name="delete_tc">Delete</string>
-
-    <string name="direction_wizard_text">Select the measurements that should stay the same (i.e. should not be scaled up or down when the number of servings changes).</string>
-
-    <string name="directions">Directions</string>
-
-    <string name="done">Done</string>
-
-    <string name="edit">Edit</string>
-
+    <string name="directions_label">Directions</string>
+    <string name="edit_button_description">Edit Recipe</string>
+    <string name="edit_recipe_description">Edit Recipe</string>
     <string name="email_body">Save attachment and import into Recipe Wizard</string>
-
-    <string name="exit_prompt">Exit</string>
-
-    <string name="export">Export</string>
-
-    <string name="get_image">Get Image</string>
-
-    <string name="help">Help</string>
-
-    <string name="help1">
-        "Recipe Wizard is a simple recipe app that allows you to import, export and"
-        "share recipes as plain, human-readable text.\n\nYou can share one recipe (via text, email, etc) or your entire collection of recipes"
-        "(mostly via email).\n\nIn addition, you can capture text and convert it into a recipe with (for the most part)"
-        "very little editing. Capturing text can be done by pasting text into the app, by"
-        "loading images containing text (e.g. screenshots), or by taking pictures of printed"
-        "recipes. Pulling recipes from image or the camera tends to require a bit more editing"
-        "but (again, for the most part) works pretty well.\n\nNOTE: On some devices, you might get a \"can't access camera\" message."
-        "If you get this, go into your phone's settings, find the app permissions for Recipe Wizard, and explicitly turn on the camera permissions.\n"
-    </string>
-
-    <string name="help10">
-        "The servings and measurement system controls let you alter the recipe to suit your needs. Recipe Wizard will (for the most part) convert the ingredients and instruction to match your selections."
-    </string>
-
-    <string name="help11">
-        "On this screen, you can type in a recipe, filling in the name, ingredients and directions, and specifying the number of servings and whether it's imperial or metric."
-    </string>
-
-    <string name="help12">
-        "The Save button saves the recipe to your collection. It'll be added to the list, sorted by name."
-    </string>
-
-    <string name="help13">
-        "The Capture button lets you create a recipe from plain text, an image, or your camera."
-    </string>
-
-    <string name="help14">
-        "The Capture screen lets you grab a recipe from plain text, an image of a recipe, or from the device's camera."
-    </string>
-
-    <string name="help15">
-        "The Camera button starts up the camera and lets you take pictures of a printed recipe. Just tap the screen to grab the text. If you have a recipe that spans several pages, or needs to be captured in pieces, just keep taking pictures. Recipe Wizard will string all the text together."
-    </string>
-
-    <string name="help16">
-        "The Image button works pretty much the same, but with images saved on your device."
-    </string>
-
-    <string name="help17">
-        "The text you've captured will probably need a bit of cleanup. Once you've got it in a reasonable format, tap the Done button to take you back to the Add screen, where you can save it to your recipe collection."
-    </string>
-
-    <string name="help18">
-        "The Delete button should be fairly self-explanatory."
-    </string>
-
-    <string name="help19">
-        "The menu bar contains icons (depending on context) for...\nHome: Go back to the main screen.\nShopping Cart: View your grocery list.\nHelp: View this screen."
-    </string>
-
-    <string name="help2">
-        "This screen lists all the available recipes in your collection. Tapping on the name of a recipe lets you view the details.\n"
-    </string>
-
-    <string name="help21">
-        "The search bar lets you find recipes in your collection. Typing a single word or phrase will bring up all"
-        "the recipes that contain that word or phrase, sorted by title. Typing a list of words or phrases will list all the"
-        "recipes that contain at least one of them in the ingredients, sorted by best match.\n"
-    </string>
-
-    <string name="help22">
-        "The Add to Cart button adds the ingredients of the recipe you're viewing to your grocery list."
-        "Recipe Wizard will attempt to consolidate similar ingredients into a single grocery list item"
-        "(e.g. 1/2 lb chicken + 1 lb chicken = 1 1/2 lb chicken."
-    </string>
-
-
-    <string name="help23">
-        "The grocery list displays the ingredients you've added from the View Recipe screen. You can add items"
-        "by filling in the blank item at the top of the list, or hitting Enter at the end of any existing one"
-        "to insert it into the middle of the list.\n\nThe list is saved whenever you leave the screen,"
-        "including the items you've checked off.\n\nYou can share the grocery list, or just copy it and paste it into another app.\n"
-    </string>
-
-    <string name="help24">
-        "The Recalculate button will search for items with the same description and attempt to consolidate"
-        "them into a single item."
-    </string>
-
-    <string name="help25">
-        "The drag handle to the left of each item allows you to reorder items so you can, say, group all the produce"
-        "items together."
-    </string>
-
-    <string name="help26">
-        "Tapping the X on the right will delete an item if you've already got it in the pantry."
-    </string>
-
-
-    <string name="help3">
-        "The Add button allows you to add a new recipe. You can type it in manually, or capture it from text, an image, or the camera."
-    </string>
-
-    <string name="help33">The \"Magic\" button allows you to make certain sections of a recipe\'s directions non-scalable. For example, if the directions include \"add 1 tsp to each muffin tin\", you wouldn\'t want that to change to \"2 tsp\" when you double the servings. This button will only show up if Recipe Wizard detects scalable ingredients in the directions.</string>
-
-    <string name="help4">
-        "The Share button lets you share your entire recipe collection. Typically, you'd send that as an email attachment."
-    </string>
-
-    <string name="help41">This screen lets you edit a recipe. It works pretty much like the Add Recipe screen, with the exception that the Capture button has been replaced by a Delete button.</string>
-
-    <string name="help5">
-        "The Import button lets you either add to or replace your recipe collection with a file stored on your device. Ideally, the file is an export from someone else's app, but you can pull from any text file with an appropriate format."
-    </string>
-
-    <string name="help6">
-        "The Export button lets you save your entire collection to a file on your device. You can use this as a backup, or send the file to another user to import into their collection."
-    </string>
-
-    <string name="help7">
-        "On this screen, you can view a recipe's details."
-    </string>
-
-    <string name="help8">
-        "The Edit button allows you to edit the current recipe. This will alter the original recipe, even if you've changed the servings or measurement system on this screen."
-    </string>
-
-    <string name="help9">
-        "The Share button lets you share the current recipe, in plain text. If you've changed the servings or measurement system, you'll have the option of sending the original, or altered version."
-    </string>
-
-    <string name="help_add_recipe">Add a Recipe</string>
-    <string name="help_capture">Capture a Recipe</string>
-    <string name="help_edit_recipe">Edit a Recipe</string>
-    <string name="help_grocery_list">Grocery List</string>
-    <string name="help_mainscreen">Main Screen</string>
-    <string name="help_menubar">Menu Bar</string>
-    <string name="help_view_recipe">View a Recipe</string>
-
-    <string name="home">Home</string>
-
-    <string name="image">Image</string>
-
-    <string name="imperial">Imperial</string>
-
+    <string name="export_recipes">Export Recipes</string>
+    <string name="hint_directions">Enter directions, one step per line, ending each line with a period...</string>
+    <string name="hint_ingredients">Enter ingredients, one per line...</string>
+    <string name="hint_recipe_name">Enter recipe name</string>
+    <string name="hint_servings">e.g. 4</string>
+    <string name="home_icon_description">Go to Home</string>
     <string name="import_prompt">You can either add to your existing recipes, replace them, or merge the two sets. Which would you prefer?</string>
-    <string name="import_recipes">Import</string>
+    <string name="import_recipes">Import Recipes</string>
     <string name="import_title">Import</string>
-
-    <string name="increase">increase servings</string>
-
-    <string name="ingredients">Ingredients</string>
-
-    <string name="magic">magic</string>
-
-    <string name="metric">Metric</string>
-
-    <string name="no">No</string>
-
-    <string name="ocr_prompt">Tap Screen to Grab Text</string>
-
-    <string name="original">Original</string>
-
+    <string name="ingredients_label">Ingredients</string>
+    <string name="initial_servings_value">1</string>
+    <string name="label_directions">Directions</string>
+    <string name="label_ingredients">Ingredients</string>
+    <string name="label_recipe_name">Recipe Name</string>
+    <string name="label_servings">Servings:</string>
+    <string name="merge">Merge</string>
     <string name="provider_name">@string/auth_name</string>
-
     <string name="recipe_book">Recipe Book</string>
     <string name="recipe_name">Recipe Name</string>
     <string name="recipe_prefix">Recipe:</string>
-
-    <string name="recalculate">Recalculate items</string>
-
-
     <string name="replace">Replace</string>
-    <string name="merge">Merge</string>
-
-    <string name="save">Save</string>
-
+    <string name="save_recipe_description">Save Recipe</string>
+    <string name="search_recipes_hint">keyword or comma-separated list of ingredients</string>
     <string name="select_file_prompt">Select a file to load</string>
     <string name="select_location_prompt">Select a location to save file</string>
-
-    <string name="servings">servings</string>
-    <string name="servings_label">Servings</string>
-
+    <string name="servings_decrement_description">Decrement servings</string>
+    <string name="servings_increment_description">Increment servings</string>
     <string name="share">Share</string>
     <string name="share_book">Share Recipe Book</string>
+    <string name="share_button_description">Share Recipe</string>
     <string name="share_recipe">Share recipe</string>
     <string name="share_recipe_book">Share recipe book</string>
+    <string name="share_recipe_description">Share Recipe</string>
     <string name="share_recipe_prefix">Share</string>
     <string name="share_recipe_prompt">You can share the original recipe, or the converted version. Which would you prefer?</string>
-    <string name="share_grocery_list">Share grocery list</string>
+    <string name="edit_recipe_prompt">You can edit the original recipe, or convert the recipe to the new servings and units, and edit that. Which would you prefer?</string>
+    <string name="share_recipes">Share Recipes</string>
+    <string name="units_imperial">IMPERIAL</string>
+    <string name="units_metric">METRIC</string>
+    <string name="wizard_recipe_description">Recipe Wizard Action</string>
+    <string name="capture_recipe_description">Capture recipe</string>
+    <string name="take_photo_description">Get text with camera</string>
+    <string name="get_image_description">Get text from saved image</string>
+    <string name="capture_done_description">Finish capturing text</string>
+    <string name="original">Original</string>
+    <string name="converted">Converted</string>
+    <string name="convert_first">Convert First</string>
+    <string name="hint_capture_text">Title \n(blank line or \'Ingredients\') \nIngredients \n(blank line or \'Directions\') \nDirections\n\'Serves\' __</string>
+    <string name="save">Save</string>
+    <string name="edit_check">Edit Recipe</string>
 
-    <string name="grocery_list">Grocery List</string>
+    <string name="captured_prompt">Clean up text before saving.</string>
+    <string name="direction_wizard_text">Select the measurements that should stay the same (i.e. should not be scaled up or down when the number of servings changes).</string>
 
-    <string name="take_picture">Take picture</string>
-
-    <string name="type_recipe_name">Type recipe name</string>
-
-    <string name="yes">Yes</string>
-
-    <string name="zeroServings">00 servings</string>
-    <string name="drag_item">drag item</string>
 </resources>

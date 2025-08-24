@@ -83,16 +83,16 @@ public class RecipeParser
      */
     private void parseIngredients()
     {
-        String ingredients = "";
+        StringBuilder ingredients = new StringBuilder();
         for (int i = ingredientsStart + 1; i < directionsStart; i++)
         {
             if (!lines[i].trim().isEmpty() && !isSpecialLine(lines[i]))
             {
-                if (!ingredients.isEmpty())
+                if (ingredients.length() > 0)
                 {
-                    ingredients += "\n";
+                    ingredients.append("\n");
                 }
-                ingredients += parseDoubleLine(lines[i]);
+                ingredients.append(parseDoubleLine(lines[i]));
             }
         }
         this.ingredients = ingredients + "\n";
@@ -112,14 +112,13 @@ public class RecipeParser
 
     /**
      * try to distinguish metric vs imperial
-     *
      */
     private void parseMetric()
     {
         int metricCount = 0;
         int imperialCount = 0;
-        String lines[]=ingredients.split("\n");
-        for(String line :lines)
+        String[] lines = ingredients.split("\n");
+        for (String line : lines)
         {
             try
             {
@@ -133,8 +132,7 @@ public class RecipeParser
                 if (found)
                 {
                     imperialCount++;
-                }
-                else
+                } else
                 {
                     for (int i = 0; i < METRIC_DETECTION_UNITS.length && !found; i++)
                     {
@@ -145,7 +143,7 @@ public class RecipeParser
             } catch (Exception e)
             {
             }
-            if(metricCount>imperialCount) isMetric=true;
+            if (metricCount > imperialCount) isMetric = true;
         }
     }
 
@@ -159,7 +157,7 @@ public class RecipeParser
      */
     private void parseDirections()
     {
-        String directions = "";
+        StringBuilder directions = new StringBuilder();
         for (int i = directionsStart + 1; i < lines.length; i++)
         {
             if (!lines[i].trim().isEmpty() && !isSpecialLine(lines[i]))
@@ -169,20 +167,20 @@ public class RecipeParser
                 {
                     line = line.substring(line.indexOf(" ")).trim();
                 }
-                directions += line;
-                if (directions.trim().endsWith(".") || directions.trim().endsWith(":") || isVerbatim)
+                directions.append(line);
+                if (directions.toString().trim().endsWith(".") || directions.toString().trim().endsWith(":") || isVerbatim)
                 {
-                    directions += "\n";
-                } else if (directions.endsWith("-"))
+                    directions = new StringBuilder(directions.toString().trim() + "\n");
+                } else if (directions.toString().endsWith("-"))
                 {
-                    directions = directions.substring(0, directions.length() - 1);
+                    directions = new StringBuilder(directions.substring(0, directions.length() - 1));
                 } else
                 {
-                    directions += " ";
+                    directions.append(" ");
                 }
             }
         }
-        this.directions = directions;
+        this.directions = directions.toString();
     }
 
     /**
@@ -222,37 +220,26 @@ public class RecipeParser
     private void parseServings()
     {
         int servings = 4;
-        if (servingsString.isEmpty())
-        {
-            this.servings = servings;
-        } else
+        if (!servingsString.isEmpty())
         {
             String[] elements = servingsString.split("\\s|\\xA0|\\.|\\t");
-            for (int i = 0; i < elements.length; i++)
+            for (String element : elements)
             {
                 try
                 {
-                    servings = Integer.parseInt(elements[i]);
+                    servings = Integer.parseInt(element);
                 } catch (NumberFormatException e)
                 {
                 }
             }
-            this.servings = servings;
         }
+        this.servings = servings;
     }
+
 
     /**
      * read a recipe's text and parse it into a recipe
-     * @param text
-     */
-    public void setRawText(String text)
-    {
-        rawText = text;
-        parse();
-    }
-
-    /**
-     * read a recipe's text and parse it into a recipe
+     *
      * @param text
      * @param verbatim if true, assumes recipe is formatted correctly and skips some heuristics
      */
@@ -287,34 +274,34 @@ public class RecipeParser
             {
                 firstBreak = i;
             }
-            //look for actual words for ingredients
-            if (lines[i].toLowerCase().startsWith("ingredients") || lines[i].toLowerCase().equals("you will need"))
+
+            if (lines[i].toLowerCase().startsWith("ingredients") || lines[i].equalsIgnoreCase("you will need"))
             {
                 ingredientsStart = i;
             }
-            //look for actual words for directions
+
             if (lines[i].toLowerCase().startsWith("directions") || lines[i].toLowerCase().startsWith("instructions") || lines[i].toLowerCase().startsWith("preparation"))
             {
                 directionsStart = i;
             }
         }
-        if (ingredientsStart < 0) //if didn't find ingredients
+        if (ingredientsStart < 0)
         {
-            ingredientsStart = firstBreak; //try first blank line
-            if (ingredientsStart < 0) //still not there?
+            ingredientsStart = firstBreak;
+            if (ingredientsStart < 0)
             {
-                scanForIngredients(); //scan for ingredient-like lines
+                scanForIngredients();
             }
         }
 
-        if (directionsStart < 0) //if didn't find directions
+        if (directionsStart < 0)
         {
-            directionsStart = secondBreak; //try second blank line
+            directionsStart = secondBreak;
         }
-        parseTitle(); //get the title
-        parseIngredients(); //get the ingredients
-        parseDirections(); //get the directions
-        parseServings(); //get number of servings
+        parseTitle();
+        parseIngredients();
+        parseDirections();
+        parseServings();
     }
 
     /**
