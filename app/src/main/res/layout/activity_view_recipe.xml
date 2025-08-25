@@ -1,205 +1,201 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        tools:context=".ViewRecipeActivity">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".ViewRecipeActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayoutViewRecipe"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbarViewRecipe"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/dark_green"
-            app:title="@string/app_title"
-            app:titleTextColor="@android:color/white"
             app:menu="@menu/view_recipe_menu"
-        app:navigationIconTint="@android:color/white" />
+            app:navigationIconTint="@android:color/white"
+            app:title="@string/app_title"
+            app:titleTextColor="@android:color/white" />
 
 
     </com.google.android.material.appbar.AppBarLayout>
 
 
-        <LinearLayout
-            android:id="@+id/view_recipe_button_bar"
+    <LinearLayout
+        android:id="@+id/view_recipe_button_bar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/appBarLayoutViewRecipe">
+
+        <ImageButton
+            android:id="@+id/button_edit_recipe"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            app:layout_constraintTop_toBottomOf="@id/appBarLayoutViewRecipe"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            android:layout_weight="1"
+            android:background="@drawable/button_background"
+            android:contentDescription="@string/edit_recipe_description"
+            android:padding="12dp"
+            android:src="@drawable/ic_edit" />
 
-            <ImageButton
-                android:id="@+id/button_edit_recipe"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:src="@drawable/ic_edit"
-                android:contentDescription="@string/edit_recipe_description"
-                android:background="@drawable/button_background"
-                android:padding="12dp"/>
-            <ImageButton
-                android:id="@+id/button_share_recipe"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:src="@drawable/ic_share"
-                android:contentDescription="@string/share_recipe_description"
-                android:background="@drawable/button_background"
-                android:padding="12dp"/>
-            <ImageButton
-                android:id="@+id/button_delete_recipe"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:src="@drawable/ic_delete"
-                android:contentDescription="@string/delete_recipe_description"
-                android:background="@drawable/button_background"
-                android:padding="12dp"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/view_recipe_controls_row"
+        <ImageButton
+            android:id="@+id/button_share_recipe"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="8dp"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            app:layout_constraintTop_toBottomOf="@id/view_recipe_button_bar"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            android:layout_weight="1"
+            android:background="@drawable/button_background"
+            android:contentDescription="@string/share_recipe_description"
+            android:padding="12dp"
+            android:src="@drawable/ic_share" />
 
-            <LinearLayout
-                android:id="@+id/servings_control_container"
+        <ImageButton
+            android:id="@+id/button_delete_recipe"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/button_background"
+            android:contentDescription="@string/delete_recipe_description"
+            android:padding="12dp"
+            android:src="@drawable/ic_delete" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/view_recipe_controls_row"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_recipe_button_bar">
+
+        <LinearLayout
+            android:id="@+id/servings_control_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/button_background"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
+            <ImageButton
+                android:id="@+id/button_servings_decrement"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/servings_decrement_description"
+                android:src="@drawable/ic_decrement"
+                app:tint="@android:color/black" />
+
+            <TextView
+                android:id="@+id/textview_servings_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:background="@drawable/button_background"
-                android:padding="8dp"
-                android:gravity="center_vertical"
-                android:layout_marginEnd="8dp">
-
-                <ImageButton
-                    android:id="@+id/button_servings_decrement"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:src="@drawable/ic_decrement"
-                    app:tint="@android:color/black"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="@string/servings_decrement_description"/>
-
-                <TextView
-                    android:id="@+id/textview_servings_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tools:text="4"
-                    android:text="@string/initial_servings_value"
-                    android:textColor="@android:color/black"
-                    android:textSize="16sp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"/>
-
-                <ImageButton
-                    android:id="@+id/button_servings_increment"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:src="@drawable/ic_increment"
-                    app:tint="@android:color/black"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="@string/servings_increment_description"/>
-            </LinearLayout>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/button_units_toggle"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
-                android:text="@string/units_imperial"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="@string/initial_servings_value"
                 android:textColor="@android:color/black"
-                app:backgroundTint="@color/light_green"
-                app:cornerRadius="8dp"
-                app:strokeColor="@android:color/black" />
+                android:textSize="16sp"
+                tools:text="4" />
+
+            <ImageButton
+                android:id="@+id/button_servings_increment"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/servings_increment_description"
+                android:src="@drawable/ic_increment"
+                app:tint="@android:color/black" />
         </LinearLayout>
 
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/scrollview_recipe_details"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginStart="1dp"
-            android:layout_marginEnd="1dp"
-            android:layout_marginBottom="1dp"
-            app:layout_constraintTop_toBottomOf="@id/view_recipe_controls_row"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_units_toggle"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:text="@string/units_imperial"
+            android:textColor="@android:color/black"
+            app:backgroundTint="@color/light_green"
+            app:cornerRadius="8dp"
+            app:strokeColor="@android:color/black" />
+    </LinearLayout>
 
-            <LinearLayout
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollview_recipe_details"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginBottom="1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_recipe_controls_row">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/textview_recipe_name_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:layout_marginBottom="12dp"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                tools:text="Recipe Name Here" />
 
-                <TextView
-                    android:id="@+id/textview_recipe_name_detail"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    tools:text="Recipe Name Here"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/black"
-                    android:layout_marginBottom="12dp"/>
+            <TextView
+                android:id="@+id/label_ingredients"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:text="@string/ingredients_label"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/label_ingredients"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/ingredients_label"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/black"
-                    android:layout_marginBottom="4dp"/>
+            <TextView
+                android:id="@+id/textview_ingredients_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:lineSpacingMultiplier="1.2"
+                tools:text=" - Ingredient 1\n - Ingredient 2\n - Ingredient 3 with a longer description that might wrap." />
 
-                <TextView
-                    android:id="@+id/textview_ingredients_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    tools:text=" - Ingredient 1\n - Ingredient 2\n - Ingredient 3 with a longer description that might wrap."
-                    android:textColor="@android:color/black"
-                    android:layout_marginBottom="16dp"
-                    android:lineSpacingMultiplier="1.2"/>
+            <TextView
+                android:id="@+id/label_directions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:text="@string/directions_label"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/label_directions"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/directions_label"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/black"
-                    android:layout_marginBottom="4dp"/>
+            <TextView
+                android:id="@+id/textview_directions_steps"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lineSpacingMultiplier="1.2"
+                tools:text="1. First step of the directions.\n2. Second step which might be a bit longer and could also wrap around to multiple lines.\n3. Final step." />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
-                <TextView
-                    android:id="@+id/textview_directions_steps"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    tools:text="1. First step of the directions.\n2. Second step which might be a bit longer and could also wrap around to multiple lines.\n3. Final step."
-                    android:textColor="@android:color/black"
-                    android:lineSpacingMultiplier="1.2"/>
-            </LinearLayout>
-        </androidx.core.widget.NestedScrollView>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

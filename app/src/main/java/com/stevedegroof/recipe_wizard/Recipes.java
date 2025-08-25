@@ -5,6 +5,7 @@ import android.content.Intent;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.google.mlkit.vision.text.Text;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -31,6 +32,7 @@ public class Recipes
     private int sortOn = NAME;
 
     private String rawText = "";
+    private Text visionText;
 
     private Recipes()
     {
@@ -188,5 +190,16 @@ public class Recipes
     public void setRawText(String rawText)
     {
         this.rawText = rawText;
+    }
+
+    public Text getVisionText()
+    {
+        return visionText;
+    }
+
+    public void setVisionText(Text visionText)
+    {
+        this.visionText = visionText;
+
     }
 }

@@ -107,8 +107,8 @@ public class MainActivity extends AppCompatActivity
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        fileIoExecutor = Executors.newSingleThreadExecutor(); // Creates a single thread for sequential file operations
-        mainThreadHandler = new Handler(Looper.getMainLooper()); // Handler to post results to the main thread
+        fileIoExecutor = Executors.newSingleThreadExecutor();
+        mainThreadHandler = new Handler(Looper.getMainLooper());
 
 
         buttonAdd = findViewById(R.id.button_add);
@@ -224,7 +224,7 @@ public class MainActivity extends AppCompatActivity
                 termMatchCount = 0;
                 if (singleTerm)
                 {
-                    score = (recipeText.contains(lowerCaseQuery))?1:0;
+                    score = (recipeText.contains(lowerCaseQuery)) ? 1 : 0;
                 } else
                 {
                     String[] ingredientList = ingredients.split("\n");
@@ -257,17 +257,17 @@ public class MainActivity extends AppCompatActivity
 
             int position = (currentRecipe == null) ? -1 : findRecipePositionByText(currentRecipe.toPlainText(), filteredRecipes);
 
-            if (position != -1 && filteredRecipes.size()>0)
+            if (position != -1 && filteredRecipes.size() > 0)
             {
                 RecyclerView.LayoutManager layoutManager = recyclerViewRecipes.getLayoutManager();
                 if (layoutManager instanceof LinearLayoutManager)
                 {
-                    ((LinearLayoutManager) layoutManager).scrollToPositionWithOffset((position>1)?(position-2):0, 0);
+                    ((LinearLayoutManager) layoutManager).scrollToPositionWithOffset((position > 1) ? (position - 2) : 0, 0);
                 } else
                 {
-                    recyclerViewRecipes.scrollToPosition((position>1)?(position-2):0);
+                    recyclerViewRecipes.scrollToPosition((position > 1) ? (position - 2) : 0);
                 }
-                Recipes.getInstance().setCurrentRecipe(position==-1?null:filteredRecipes.get(position));
+                Recipes.getInstance().setCurrentRecipe(position == -1 ? null : filteredRecipes.get(position));
             }
         }
     }
@@ -578,15 +578,12 @@ public class MainActivity extends AppCompatActivity
     {
         importUri = uri;
 
-        // Show progress dialog on the UI thread
         if (progressDialog != null && !progressDialog.isShowing())
         {
             progressDialog.show();
         } else if (progressDialog == null)
         {
-            // Re-initialize progressDialog if it's null (e.g., after screen rotation if not handled)
-            // This part might need adjustment based on how your progressDialog is managed across config changes
-            AlertDialog.Builder progBuilder = new AlertDialog.Builder(this); // Use 'this' for context
+            AlertDialog.Builder progBuilder = new AlertDialog.Builder(this);
             progBuilder.setCancelable(false);
             LayoutInflater inflater = this.getLayoutInflater();
             progressDialogView = inflater.inflate(R.layout.layout_loading_dialog, null);
@@ -649,10 +646,9 @@ public class MainActivity extends AppCompatActivity
             }
         }
 
-        // Shut down the ExecutorService
         if (fileIoExecutor != null && !fileIoExecutor.isShutdown())
         {
-            fileIoExecutor.shutdown(); // Initiates an orderly shutdown
+            fileIoExecutor.shutdown();
         }
     }
 

@@ -63,11 +63,17 @@
     <string name="original">Original</string>
     <string name="converted">Converted</string>
     <string name="convert_first">Convert First</string>
-    <string name="hint_capture_text">Title \n(blank line or \'Ingredients\') \nIngredients \n(blank line or \'Directions\') \nDirections\n\'Serves\' __</string>
+    <string name="hint_capture_text">(title of recipe)\nIngredients\n(list of ingredients) \nDirections\n(list of directions)</string>
     <string name="save">Save</string>
     <string name="edit_check">Edit Recipe</string>
 
-    <string name="captured_prompt">Clean up text before saving.</string>
+    <string name="captured_prompt">Clean up text before saving. Be sure to include a title, the line "Ingredients", and the line "Directions".</string>
     <string name="direction_wizard_text">Select the measurements that should stay the same (i.e. should not be scaled up or down when the number of servings changes).</string>
+    <string name="title_edit_text_blocks">Remove Junk Text</string>
+    <string name="action_home">Home</string>
+    <string name="save_edited_text_description">Save edited text</string>
+    <string name="remove_text_block_description">Remove this text block</string>
+    <string name="edit_text_blocks_instructions">Remove any extraneous text by tapping X, reorder the remaining text as needed, then save to continue.</string>
+    <string name="drag_to_reorder_description">drag to reorder</string>
 
 </resources>

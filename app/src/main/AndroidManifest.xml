@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -27,25 +26,24 @@
         </activity>
         <activity
             android:name=".ViewRecipeActivity"
-            android:label="View Recipe">
-        </activity>
+            android:label="View Recipe"></activity>
         <activity
             android:name=".EditRecipeActivity"
-            android:label="Edit Recipe">
-        </activity>
+            android:label="Edit Recipe"></activity>
         <activity
             android:name=".AddRecipeActivity"
-            android:label="Add Recipe">
-        </activity>
+            android:label="Add Recipe"></activity>
         <activity
             android:name=".CaptureRecipeActivity"
-            android:label="Capture Recipe">
-        </activity>
+            android:label="Capture Recipe"></activity>
 
         <activity
             android:name=".DirectionsAdjustmentActivity"
-            android:label="Adjust Directions">
-        </activity>
+            android:label="Adjust Directions"></activity>
+
+        <activity
+            android:name=".EditTextBlocksActivity"
+            android:label="Edit Text Blocks"></activity>
 
         <provider
             android:name="androidx.core.content.FileProvider"
