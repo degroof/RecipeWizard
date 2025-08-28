@@ -193,8 +193,23 @@
                 android:id="@+id/textview_directions_steps"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
                 android:lineSpacingMultiplier="1.2"
                 tools:text="1. First step of the directions.\n2. Second step which might be a bit longer and could also wrap around to multiple lines.\n3. Final step." />
+
+            <TextView
+                android:id="@+id/label_notes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:text="@string/notes_label"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textview_notes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lineSpacingMultiplier="1.2" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

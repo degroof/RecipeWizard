@@ -16,7 +16,42 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 /**
- * A singleton for holding recipes
+ * A singleton class for managing a collection of {@link Recipe} objects.
+ * This class provides functionalities to load, save, sort, and manipulate recipes.
+ * It also handles the conversion of recipes to plain text and manages the current recipe being viewed or edited.
+ * The class uses a singleton pattern to ensure only one instance manages the recipes throughout the application.
+ *
+ * <p>Key functionalities include:
+ * <ul>
+ *     <li>Loading recipes from and saving recipes to private storage using JSON format.</li>
+ *     <li>Sorting recipes based on predefined criteria (e.g., name, score).</li>
+ *     <li>Converting the entire recipe collection or individual recipes to plain text.</li>
+ *     <li>Removing duplicate recipes from the collection.</li>
+ *     <li>Managing the currently selected recipe.</li>
+ *     <li>Storing raw text and vision text from image recognition for recipe creation.</li>
+ * </ul>
+ * </p>
+ *
+ * <p><b>Constants:</b></p>
+ * <ul>
+ *     <li>{@link #NAME}: Constant representing sorting by recipe name.</li>
+ *     <li>{@link #SCORE}: Constant representing sorting by recipe score.</li>
+ * </ul>
+ *
+ * <p><b>Usage:</b></p>
+ * <pre>
+ * // Get the singleton instance
+ * Recipes recipesManager = Recipes.getInstance();
+ *
+ * // Load recipes
+ * recipesManager.load(context);
+ *
+ * // Get the list of recipes
+ * ArrayList&lt;Recipe&gt; allRecipes = recipesManager.getList();
+ *
+ * // Save recipes
+ * recipesManager.save(context);
+ * </pre>
  */
 public class Recipes
 {
@@ -54,9 +89,14 @@ public class Recipes
     }
 
     /**
-     * load recipes from private storage
+     * Loads recipes from private storage.
+     * <p>
+     * This method reads a JSON file containing recipe data, deserializes it,
+     * and populates the internal list of recipes. If the file is not found or
+     * an error occurs during reading or parsing, the list remains empty or
+     * in its previous state. After successfully loading, the recipes are sorted.
      *
-     * @param ctx
+     * @param ctx The application context, used to access private file storage.
      */
     public void load(Context ctx)
     {
@@ -89,9 +129,11 @@ public class Recipes
     }
 
     /**
-     * save recipes to private storage
+     * Saves the list of recipes to private storage.
+     * The recipes are serialized to JSON format before being written to a file.
+     * After saving, the list of recipes is sorted.
      *
-     * @param ctx
+     * @param ctx The context used to access private storage.
      */
     public void save(Context ctx)
     {
@@ -112,11 +154,13 @@ public class Recipes
     }
 
     /**
-     * extract the entire recipe book into plain text
+     * Extracts the entire recipe book into plain text.
+     * Each recipe is separated by {@link MainActivity#RECIPE_BREAK}.
      *
-     * @return
+     * @param includeNotes If true, notes for each recipe will be included in the output.
+     * @return A string containing all recipes in plain text format.
      */
-    public String toPlainText()
+    public String toPlainText(boolean includeNotes)
     {
         StringBuilder textContent = new StringBuilder();
         Recipe recipe;
@@ -124,7 +168,7 @@ public class Recipes
         {
             recipe = getList().get(i);
             if (i != 0) textContent.append(MainActivity.RECIPE_BREAK + "\n");
-            textContent.append(recipe.toPlainText());
+            textContent.append(recipe.toPlainText(includeNotes));
         }
         return textContent.toString();
     }
@@ -140,9 +184,14 @@ public class Recipes
     }
 
     /**
-     * remove duplicates
+     * Removes duplicate recipes from the list.
+     * <p>
+     * This method iterates through the existing list of recipes and identifies duplicates
+     * based on a case-insensitive comparison of their titles and plain text content
+     * (with all whitespace removed). It broadcasts progress updates during the deduplication
+     * process.
      *
-     * @param context
+     * @param context The application context, used to send broadcast intents for progress updates.
      */
     public void dedupe(Context context)
     {
@@ -164,7 +213,7 @@ public class Recipes
             {
                 Recipe newRecipe = newRecipes.get(i);
                 found = newRecipe.getTitle().replaceAll("\\s", "").equalsIgnoreCase(recipe.getTitle().replaceAll("\\s", ""))
-                        && newRecipe.toPlainText().replaceAll("\\s", "").equalsIgnoreCase(recipe.toPlainText().replaceAll("\\s", ""));
+                        && newRecipe.toPlainText(true).replaceAll("\\s", "").equalsIgnoreCase(recipe.toPlainText(true).replaceAll("\\s", ""));
             }
             if (!found) newRecipes.add(recipe);
         }

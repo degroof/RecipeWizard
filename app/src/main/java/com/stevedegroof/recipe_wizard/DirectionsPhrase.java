@@ -1,7 +1,9 @@
 package com.stevedegroof.recipe_wizard;
 
 /**
- * A phrase within the directions; usually a measurement
+ * Represents a phrase within recipe directions, often indicating a measurement or specific action.
+ * This class encapsulates the text of the phrase, its starting and ending positions within the
+ * overall directions, and the surrounding context of the phrase.
  */
 public class DirectionsPhrase
 {

@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".AddRecipeActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayoutAddRecipe"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbarAddRecipe"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/dark_green"
+            app:menu="@menu/add_recipe_menu"
+            app:title="@string/app_title"
+            app:titleTextColor="@android:color/white" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+    <LinearLayout
+        android:id="@+id/add_recipe_button_bar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/appBarLayoutAddRecipe">
+
+        <ImageButton
+            android:id="@+id/button_save_recipe"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/button_background"
+            android:contentDescription="@string/save_recipe_description"
+            android:padding="12dp"
+            android:src="@drawable/ic_save" />
+
+        <ImageButton
+            android:id="@+id/button_capture_recipe"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/button_background"
+            android:contentDescription="@string/capture_recipe_description"
+            android:padding="12dp"
+            android:src="@drawable/ic_capture" />
+    </LinearLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollview_add_recipe"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/add_recipe_button_bar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/label_recipe_name"
+                style="@style/TextAppearance.MaterialComponents.Subtitle1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_recipe_name" />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edittext_recipe_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:hint="@string/hint_recipe_name"
+                android:inputType="textCapSentences" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/label_servings"
+                    style="@style/TextAppearance.MaterialComponents.Subtitle1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:text="@string/label_servings" />
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edittext_servings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:hint="@string/hint_servings"
+                    android:inputType="number"
+                    android:maxLength="3"
+                    android:minWidth="60dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_units_toggle_edit"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:text="@string/units_imperial"
+                    android:textColor="@android:color/black"
+                    app:backgroundTint="@color/light_green"
+                    app:cornerRadius="8dp"
+                    app:strokeColor="@android:color/black" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/label_ingredients_add"
+                style="@style/TextAppearance.MaterialComponents.Subtitle1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_ingredients" />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edittext_ingredients"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/edittext_multiline_background"
+                android:gravity="top|start"
+                android:hint="@string/hint_ingredients"
+                android:inputType="textMultiLine|textCapSentences"
+                android:minLines="3"
+                android:padding="8dp"
+                android:scrollbars="vertical" />
+
+            <TextView
+                android:id="@+id/label_directions_add"
+                style="@style/TextAppearance.MaterialComponents.Subtitle1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_directions" />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edittext_directions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/edittext_multiline_background"
+                android:gravity="top|start"
+                android:hint="@string/hint_directions"
+                android:inputType="textMultiLine|textCapSentences"
+                android:minLines="5"
+                android:padding="8dp"
+                android:scrollbars="vertical" />
+
+            <TextView
+                android:id="@+id/label_notes_add"
+                style="@style/TextAppearance.MaterialComponents.Subtitle1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_notes" />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edittext_notes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edittext_multiline_background"
+                android:gravity="top|start"
+                android:hint="@string/hint_notes"
+                android:inputType="textMultiLine|textCapSentences"
+                android:minLines="5"
+                android:padding="8dp"
+                android:scrollbars="vertical" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

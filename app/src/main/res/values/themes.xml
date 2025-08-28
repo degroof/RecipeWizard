@@ -1,0 +1,17 @@
+<resources>
+
+    <style name="Base.Theme.RecipeWizard" parent="Theme.Material3.DayNight.NoActionBar"></style>
+
+    <style name="Theme.RecipeWizard" parent="Base.Theme.RecipeWizard" />
+
+    <style name="IconButtonStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/button_background
+        </item>
+        <item name="android:padding">8dp</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:adjustViewBounds">true</item>
+    </style>
+</resources>
+

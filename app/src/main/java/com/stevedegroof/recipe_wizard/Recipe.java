@@ -6,6 +6,11 @@ import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 
+/**
+ * Represents a single recipe with its title, servings, ingredients, directions, and notes.
+ * This class implements {@link Comparable} to allow sorting of recipes.
+ * It also supports parceling for Android.
+ */
 public class Recipe implements Comparable<Recipe>
 {
     private ArrayList<DirectionsPhrase> excludedPhrases = new ArrayList<>();
@@ -14,10 +19,20 @@ public class Recipe implements Comparable<Recipe>
     private boolean isMetric;
     private String ingredients;
     private String directions;
+    private String notes;
 
     private transient double sortScore = 1d;
 
 
+    /**
+     * Constructor for a Recipe object
+     *
+     * @param title       Title of the recipe
+     * @param servings    Number of servings the recipe makes
+     * @param isMetric    True if the recipe uses metric units, false otherwise
+     * @param ingredients List of ingredients for the recipe
+     * @param directions  Directions for preparing the recipe
+     */
     public Recipe(String title, String servings, boolean isMetric, String ingredients, String directions)
     {
         this.title = title;
@@ -100,13 +115,21 @@ public class Recipe implements Comparable<Recipe>
     }
 
 
-    public String toPlainText()
+    /**
+     * Converts the recipe to a plain text string.
+     *
+     * @param includeNotes Whether to include the notes in the output.
+     * @return The plain text representation of the recipe.
+     */
+    public String toPlainText(boolean includeNotes)
     {
         String textContent = getTitle() + "\n";
         textContent += "Ingredients\n" + getIngredients();
         textContent += "Directions\n" + getDirections();
         if (!textContent.endsWith("\n")) textContent += "\n";
         textContent += "Serves " + getServings() + "\n";
+        if (includeNotes && notes != null && !notes.isEmpty())
+            textContent += "Notes\n" + notes + ((notes.endsWith("\n")) ? "" : "\n");
         return textContent;
     }
 
@@ -119,10 +142,18 @@ public class Recipe implements Comparable<Recipe>
     }
 
     /**
-     * Used for sorting
+     * Compares this recipe with the specified recipe for order.
+     * Returns a negative integer, zero, or a positive integer as this recipe
+     * is less than, equal to, or greater than the specified recipe.
+     * <p>
+     * The comparison is based on the current sort setting in {@link Recipes}.
+     * If sorting by name, it compares the titles of the recipes.
+     * Otherwise, it compares the sort scores, with a higher score indicating
+     * a "greater" recipe (resulting in descending order for sort scores).
      *
-     * @param recipe
-     * @return
+     * @param recipe the recipe to be compared.
+     * @return a negative integer, zero, or a positive integer as this recipe
+     * is less than, equal to, or greater than the specified recipe.
      */
     @Override
     public int compareTo(Recipe recipe)
@@ -155,9 +186,13 @@ public class Recipe implements Comparable<Recipe>
     }
 
 
-    public int getTotalIngredients()
+    public String getNotes()
     {
-        return ingredients.split("\n").length;
+        return notes;
     }
 
+    public void setNotes(String notes)
+    {
+        this.notes = notes;
+    }
 }
