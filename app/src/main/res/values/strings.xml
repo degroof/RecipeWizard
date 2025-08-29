@@ -20,7 +20,7 @@
     <string name="drag_to_reorder_description">drag to reorder</string>
     <string name="edit_check">Edit Recipe</string>
     <string name="edit_recipe_description">Edit Recipe</string>
-    <string name="edit_recipe_prompt">You can edit the original recipe, or convert the recipe to the new servings and units, and edit that. Which would you prefer?</string>
+    <string name="edit_recipe_prompt">You can edit the original recipe, or convert the recipe to the new servings and units, and edit that. Which would you prefer?\n\nNOTE: Editing and saving the converted recipe will overwrite the original one.</string>
     <string name="edit_text_blocks_instructions">Remove any extraneous text by tapping X, reorder the remaining text as needed, then save to continue.</string>
     <string name="email_body">Save attachment and import into Recipe Wizard</string>
     <string name="export_recipes">Export Recipes</string>
@@ -44,7 +44,7 @@
     <string name="label_servings">Servings:</string>
     <string name="merge">Merge</string>
     <string name="notes_label">Notes</string>
-    <string name="original">Original</string>
+    <string name="original">Edit Original Recipe</string>
     <string name="provider_name">@string/auth_name</string>
     <string name="recipe_book">Recipe Book</string>
     <string name="recipe_prefix">Recipe:</string>
